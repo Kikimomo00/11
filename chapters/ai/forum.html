@@ -1,0 +1,463 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI 仿真论坛</title></head><body><div class="focix_forum_sandbox">
+  <style>
+    .focix_forum_sandbox {
+      width: 100%;
+      max-width: 680px;
+      height: 720px;
+      margin: 0 auto;
+      background: #fbf9fa;
+      border-radius: 24px;
+      box-shadow: 0 16px 40px rgba(74, 58, 71, 0.06);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .focix_forum_header {
+      background: #ffffff;
+      padding: 24px 24px 16px 24px;
+      border-bottom: 1px solid #f0e8ec;
+      flex-shrink: 0;
+    }
+    .focix_forum_title_row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .focix_forum_name {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2b242a;
+      letter-spacing: -0.3px;
+    }
+    .focix_forum_badge {
+      font-size: 11px;
+      color: #916b88;
+      background: #f6eef3;
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .focix_forum_desc {
+      font-size: 13px;
+      color: #8c7d87;
+      line-height: 1.5;
+    }
+    .focix_forum_tabs {
+      display: flex;
+      gap: 20px;
+      margin-top: 16px;
+    }
+    .focix_tab_item {
+      font-size: 13px;
+      color: #8c7d87;
+      font-weight: 500;
+      padding-bottom: 6px;
+      cursor: pointer;
+      position: relative;
+    }
+    .focix_tab_item.active {
+      color: #2b242a;
+      font-weight: 700;
+    }
+    .focix_tab_item.active::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #8e5b82;
+      border-radius: 2px;
+    }
+    .focix_view_container {
+      flex: 1;
+      overflow-y: auto;
+      scrollbar-width: none;
+      position: relative;
+    }
+    .focix_view_container::-webkit-scrollbar {
+      display: none;
+    }
+    .focix_post_list {
+      display: flex;
+      flex-direction: column;
+    }
+    .focix_post_item {
+      background: #ffffff;
+      padding: 18px 24px;
+      border-bottom: 1px solid #f6f0f4;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    .focix_post_item:hover {
+      background-color: #faf5f8;
+    }
+    .focix_post_title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #2b242a;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+    .focix_post_meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #a89aa4;
+    }
+    .focix_post_author {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .focix_post_avatar_mini {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #e2d5de;
+    }
+    .focix_post_stats {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: #8e5b82;
+      font-weight: 600;
+      background: #fdf5f9;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+    .focix_detail_view {
+      display: none;
+      background: #ffffff;
+      min-height: 100%;
+      padding: 24px;
+      box-sizing: border-box;
+    }
+    .focix_detail_view.active {
+      display: block;
+    }
+    .focix_detail_nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #8e5b82;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 20px;
+      width: fit-content;
+    }
+    .focix_detail_title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #2b242a;
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+    .focix_detail_author_row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #f6f0f4;
+    }
+    .focix_detail_avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #dfd0db;
+    }
+    .focix_detail_author_info {
+      display: flex;
+      flex-direction: column;
+    }
+    .focix_detail_author_name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #2b242a;
+    }
+    .focix_detail_time {
+      font-size: 11px;
+      color: #a89aa4;
+    }
+    .focix_detail_body {
+      font-size: 14px;
+      line-height: 1.8;
+      color: #4a3e47;
+      margin-bottom: 30px;
+      white-space: pre-wrap;
+    }
+    .focix_comment_header {
+      font-size: 14px;
+      font-weight: 700;
+      color: #2b242a;
+      margin-bottom: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #f0e8ec;
+      display: flex;
+      justify-content: space-between;
+    }
+    .focix_comment_list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .focix_comment_item {
+      display: flex;
+      gap: 12px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #faf5f8;
+    }
+    .focix_comment_avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #e9e0e6;
+      flex-shrink: 0;
+    }
+    .focix_comment_main {
+      flex: 1;
+    }
+    .focix_comment_top {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .focix_comment_user {
+      font-size: 12px;
+      font-weight: 600;
+      color: #5c4d57;
+    }
+    .focix_comment_floor {
+      font-size: 11px;
+      color: #c2b6bf;
+    }
+    .focix_comment_text {
+      font-size: 13px;
+      color: #3b3138;
+      line-height: 1.5;
+    }
+  </style>
+
+  <div class="focix_forum_header">
+    <div class="focix_forum_title_row">
+      <div class="focix_forum_name">FOCIX想涛就涛</div>
+      <div class="focix_forum_badge">实时热议</div>
+    </div>
+    <div class="focix_forum_desc">本组百无禁忌 有浮木你就来</div>
+    <div class="focix_forum_tabs">
+      <div class="focix_tab_item active">全部讨论</div>
+      <div class="focix_tab_item">精华区</div>
+    </div>
+  </div>
+
+  <div class="focix_view_container">
+    <div class="focix_post_list" id="focixPostList"></div>
+    <div class="focix_detail_view" id="focixDetailView">
+      <div class="focix_detail_nav" id="focixBackBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <span>返回讨论列表</span>
+      </div>
+      <div class="focix_detail_title" id="focixDetailTitle"></div>
+      <div class="focix_detail_author_row">
+        <div class="focix_detail_avatar"></div>
+        <div class="focix_detail_author_info">
+          <div class="focix_detail_author_name" id="focixDetailAuthor"></div>
+          <div class="focix_detail_time" id="focixDetailTime"></div>
+        </div>
+      </div>
+      <div class="focix_detail_body" id="focixDetailContent"></div>
+      <div class="focix_comment_header">
+        <span>回帖列表</span>
+        <span id="focixCommentCountTag" style="color: #8e5b82; font-weight: normal; font-size: 12px;"></span>
+      </div>
+      <div class="focix_comment_list" id="focixCommentList"></div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const postsData = [
+        {
+          id: 1,
+          title: "【开盘】凌晨三点气歌预录下班，某公主人脸识别又挂脸了？",
+          author: "猫食槽清理工",
+          time: "03:22",
+          repliesCount: "10",
+          content: "刚看前线qsj发的小视频，SBS侧门出来连外套帽子都拉到鼻梁上了。旁边stf递个暖宝宝理都不理，眼神冷得能杀人。泡菜妹在冷风里排了三小时逆应援，正主出来连个手都不挥直接钻车？某些dw别洗什么‘美式松弛感’了，从哪里开始是敬业爱豆啊？起床气发作给谁看呢？",
+          comments: [
+          { user: "恋莓癖晚期", floor: "1F", text: "zgk打过来了我先跑。笑死，大半夜零下四度连轴转二十小时，换你你还能笑成迎宾小姐？" },
+          { user: "专注舞台查无此人", floor: "2F", text: "老爹站又来团建了。没挥手？去推特看看高清预览再来黑，手插兜里点头致意被你直接白内障过滤了？" },
+          { user: "脚圈第一懂王", floor: "3F", text: "他家大少爷脾气超多💯👉@尹洵仁。每次录制完都这副死出，习惯就好，mmr又要心疼哥哥冻着了。" },
+          { user: "关种切屏仙人", floor: "4F", text: "旁边那个助理长得挺清秀的，一直护着他后背，两个人气氛有点微妙啊，没人扒一下stf吗？" },
+          { user: "纯路人借过", floor: "5F", text: "回复@关种切屏仙人：别见个同框就发癫，那是随行翻译还是国内团队的人吧，连工作人员都要鉴嫂，有病早点治。" },
+          { user: "西伯利亚冻带鱼", floor: "6F", text: "知道公主火到你了，打歌期音源pak空破melon榜，黑子只能抓着凌晨三点没咧嘴笑在这升堂。" },
+          { user: "偷吃一口焦糖", floor: "7F", text: "他不是刚发了bubble说‘听说有人想看耳钉’吗？这还不叫媚粉？某些白嫖要求真多。" },
+          { user: "正规军已就位", floor: "8F", text: "耳钉到底给谁看的不好说呢～推上战地玫瑰cpf已经开始升天了，说千秋前天采访提过银饰。" },
+          { user: "幸福者退让bot", floor: "9F", text: "看得我幸福者退让了，糊团就是规矩少，换五代早被韩网骂上热帖八百楼了。" },
+          { user: "全网最尊重公主", floor: "10F", text: "尹洵仁很帅，其他不知道。少管世界巨星下班，滚去切瓜。" }
+          ]
+        },
+        {
+          id: 2,
+          title: "【深度】Nathan那条泡泡到底是在回应谁？茶丝和唯粉别打了",
+          author: "美帝大乱炖",
+          time: "03:28",
+          repliesCount: "10",
+          content: "‘听说有人想看我戴耳骨钉’——这句话主谓宾都很微妙啊。广场上确实有甜唯刷屏求耳钉妆造，但战地玫瑰cpf一口咬定是上周物料里千秋盯过他的耳骨。现在微博黑厕和推特同时升堂，两边数据组已经开始互相开盒了。有没有懂微表情的来解码一下，这到底是公关媚粉还是暗号营业？",
+          comments: [
+          { user: "茶茶纯血妈", floor: "1F", text: "cpf少来沾边！千秋今晚还在日娱赶通告，独自美丽别带我儿，某些腐唯有妄想症就去吃药。" },
+          { user: "战地玫瑰是真的", floor: "2F", text: "lgdl！眼神是不会骗人的，不是千秋还能是谁？难道是内娱那个八百年没同框的剧组同事？" },
+          { user: "六男一在逃保安", floor: "3F", text: "别争了，他家暗号超多💯👉@尹洵仁。说不定就是给金主或者前线大粉固粉呢，男爱豆的心思你别猜。" },
+          { user: "数据女工不睡觉", floor: "4F", text: "唯粉都出来控评！别让cpf把广场搞脏了，海外Trends刚冲进前五，赶紧去净化词条！" },
+          { user: "生拌牛肉代餐点", floor: "5F", text: "有没有一种可能，人家纯粹就是无聊随手一发？直男卖腐基操罢了，你们真当他动真格的呢？" },
+          { user: "冷萃不加糖", floor: "6F", text: "直男？他在美利坚长大的你跟我说他是纯直男？哈哈哈哈今年听到最好笑的笑话。" },
+          { user: "反串司马脸", floor: "7F", text: "一直串烦不烦？下家脂粉下场带节奏也太明显了，今晚舞台killing part秒了全场，防爆意图写脸上了。" },
+          { user: "嗑药鸡自生自灭", floor: "8F", text: "不许喝中药！这个耳钉配那个眼妆简直是末代王储病娇受，我阿帕次阿帕次地狂嗑！" },
+          { user: "理智路人小张", floor: "9F", text: "回帖一股恶臭饭圈味，这年头戴个耳钉发条动态都要被写成三万字长篇解密小说，累不累。" },
+          { user: "毒唯守门员", floor: "10F", text: "尹洵仁独美，退队大礼包先送给同队吸血虫，谢谢关心。" }
+          ]
+        },
+        {
+          id: 3,
+          title: "笑吐了，SBS侧门那个疑似跟车的小代拍被抓包了吗？",
+          author: "前线站姐的小板凳",
+          time: "03:35",
+          repliesCount: "10",
+          content: "有无现场的姐妹说一下？刚才保姆车开走前，尹洵仁站在车门边盯了街角那个穿黑衣服的人好几秒。那个视线压迫感绝了，完全没带营业笑容。那人手里好像没拿长焦大炮，也没拿手幅，直愣愣杵在路灯底下。现在私生和代拍业务都这么不专业了？还是又有网红想炒偶遇蹭热度？",
+          comments: [
+          { user: "镜头盖没开", floor: "1F", text: "现场路过，那人好像连手机都没掏出来拍，根本不像代拍，倒像是在等车或者路过的素人。" },
+          { user: "ss滚出首尔", floor: "2F", text: "管他是谁，大半夜在艺人私下行程蹲守的一律按私生处理，HeBy安保能不能干？不能干滚蛋！" },
+          { user: "抓包装修工", floor: "3F", text: "他家保镖超虚设💯👉@HeBy。艺人安全都不管，万一遇到激进黑粉泼硫酸怎么办？" },
+          { user: "吃瓜群众七号", floor: "4F", text: "素人认领了没？别又是哪个娱乐公司的练习生出来搞拉踩热搜吧，这种套路见多了。" },
+          { user: "冬夜冷风吹", floor: "5F", text: "看视频里那身段是个女孩子吧，站在风里冻得够呛，公主盯她那一眼真的是冷漠中带着烦躁。" },
+          { user: "嫂病鉴别大师", floor: "6F", text: "来了来了，嫂病虽迟但到，某些人不会想脑补一出‘大明星爱上深夜街角神秘女’吧？呕。" },
+          { user: "专治各种不服", floor: "7F", text: "楼上嘴巴放干净点，人家可能就是刚加完班等网约车的打工人，无妄之灾被你们这群疯狗咬。" },
+          { user: "唯爱薮猫颜", floor: "8F", text: "哥哥只是天生眼神锐利，警惕性高而已，大半夜视力好也有错？散了吧别给眼神。" },
+          { user: "红树莓搬运工", floor: "9F", text: "小红书上已经有代拍在打听了，说是今晚根本没放内场票，外头蹲着的几个都是老油条，那人确实生面孔。" },
+          { user: "今天了吗", floor: "10F", text: "无人在意的角落，四秒表又在营销所谓的‘全员神颜生图’了，笑死。" }
+          ]
+        },
+        {
+          id: 4,
+          title: "【盘点】FOCIX这次回归的资源分配，明皇暗皇一目了然",
+          author: "瓜田里上蹿下跳的猹",
+          time: "03:41",
+          repliesCount: "10",
+          content: "别拿‘全员兄弟情’洗脑了。主打曲《Turn the Focus》里，尹洵仁一个人占了主Rap加整整两段killing part，高定成衣也是他穿最贵的独家款。反观世完就分了几个副rap碎拍，太宣甚至连个C位高音镜头都要被切远景。公司防爆防了个寂寞，内娱投资人一砸钱，HeBy高层立刻跪着把镜头全端给某混血了是吧？",
+          comments: [
+          { user: "世完的吉他弦", floor: "1F", text: "权世完大声唱！低音被消了高音被剪了，ACE就配拿这种洗脚剧本？公司做局太明显了。" },
+          { user: "皇族请独立行走", floor: "2F", text: "有事尹洵仁，无事四秒表。出歌编曲作词写的是谁的名字瞎了看不到？能力强活该镜头多！" },
+          { user: "安队长的心腹", floor: "3F", text: "安太宣体面人，每次接受采访都给皇族圆场，结果自家待遇垫底，真当老实人好欺负？" },
+          { user: "千秋家的小鹿", floor: "4F", text: "抱走千秋，我们隐皇全靠海外粉丝一砖一瓦氪出来的日输，某些中输大户别来碰瓷。" },
+          { user: "公平正义使者", floor: "5F", text: "他家top超多💯👉@FOCIX。每天为了几秒镜头撕得血雨腥风，难怪路人缘全败光。" },
+          { user: "音源流氓本氓", floor: "6F", text: "能说吗？没有尹洵仁这首歌在欧美能进榜？吸血的时候叫人家哥哥，分蛋糕嫌人家拿得多。" },
+          { user: "键盘鉴赏大师", floor: "7F", text: "从哪里开始是实力派？全靠电音和后期垫音撑着的半开麦，吹得天上有地下无的。" },
+          { user: "深夜放毒小号", floor: "8F", text: "孩子们这已经不是六男一的问题了，是整个厂牌的命脉都在被资本绑架，敢怒不敢言罢了。" },
+          { user: "唯爱实绩图", floor: "9F", text: "甩实绩图出来说话，LV全球大使+保时捷个代，商业价值吊打全团，给最多的镜头合情合理。" },
+          { user: "退组保平安", floor: "10F", text: "楼里dys戾气太重，看得我心梗，专心打榜吧别给对家送人头了。" }
+          ]
+        },
+        {
+          id: 5,
+          title: "【深夜树洞】爱上一个营业期极度完美、私下冷得像冰的男爱豆是什么体验？",
+          author: "失眠重症患者",
+          time: "03:50",
+          repliesCount: "10",
+          content: "如题。前线追过几次私享会和小规模录制。台前互动甜到让人眩晕，眨眼、咬唇、轻声喊名字样样精通，让人觉得他眼里全世界只有你。可只要镜头一挪开，那个眼神瞬间抽离得干干净净，像看一件没有生命的家具一样扫过你。这种割裂感真的会让人精神内耗，有时候甚至分不清他到底有没有哪怕一秒钟的心软。",
+          comments: [
+          { user: "梦女清醒剂", floor: "1F", text: "主楼的文字描写太有代入感了，报尹洵仁身份证得了。早说了这男的本质就是名贵冷血动物。" },
+          { user: "白日做梦研究员", floor: "2F", text: "醒醒吧姐妹，人家拿几千万年薪就是来演梦中情人的，下了班还要陪你深情对视？当他开慈善机构呢。" },
+          { user: "温存不过三秒", floor: "3F", text: "他只对他真正在意的人黏糊吧，听说私底下对熟人跟巨型猫科动物一样，你只是个花钱看戏的看客而已。" },
+          { user: "毒舌小仙女", floor: "4F", text: "你梦里的深情。爱豆对粉丝的爱全是明码标价的工业糖精，连这都走不出来建议去看心理医生。" },
+          { user: "猫薄荷供应商", floor: "5F", text: "但是他真的好会撩啊……被他那种冷淡的眼神看一眼，比被油腻男甜言蜜语轰炸爽一万倍，抖M狂喜。" },
+          { user: "法式羊角包", floor: "6F", text: "银追不能停，越冷我越想看他失控的样子，这种高傲大少爷要是真陷进一段感情里绝对要发疯。" },
+          { user: "数据批冷笑", floor: "7F", text: "有空在这无病呻吟发小作文，不如去把主打曲MV刷过五千万，非粉都觉得震撼的恋爱脑。" },
+          { user: "围观群众丙", floor: "8F", text: "这种性格在亲密关系里绝对是灾难，极度骄傲又极度别扭，谁跟他谈恋爱谁倒霉，纯纯折磨人。" },
+          { user: "生人勿近保护区", floor: "9F", text: "他身边那个男助理/保镖好像就挺能顺着他的，刚才下车还主动替他挡风，找个脾气软的互补才行。" },
+          { user: "晚安首尔城", floor: "10F", text: "散会散会，天都快亮了，帅哥已经回圣水洞豪宅看汉江夜景了，留我们穷鬼在论坛打字。" }
+          ]
+        }
+      ];
+
+      const postListEl = document.getElementById('focixPostList');
+      const detailViewEl = document.getElementById('focixDetailView');
+      const backBtnEl = document.getElementById('focixBackBtn');
+      const detailTitleEl = document.getElementById('focixDetailTitle');
+      const detailAuthorEl = document.getElementById('focixDetailAuthor');
+      const detailTimeEl = document.getElementById('focixDetailTime');
+      const detailContentEl = document.getElementById('focixDetailContent');
+      const commentListEl = document.getElementById('focixCommentList');
+      const countTagEl = document.getElementById('focixCommentCountTag');
+
+      function renderList() {
+        postListEl.innerHTML = '';
+        postsData.forEach(post => {
+          const item = document.createElement('div');
+          item.className = 'focix_post_item';
+          item.innerHTML = `
+          <div class="focix_post_title">${post.title}</div>
+          <div class="focix_post_meta">
+          <div class="focix_post_author">
+          <div class="focix_post_avatar_mini"></div>
+          <span>${post.author}</span>
+          <span>•</span>
+          <span>${post.time}</span>
+          </div>
+          <div class="focix_post_stats">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <span>${post.repliesCount}</span>
+          </div>
+          </div>
+          `;
+          item.addEventListener('click', () => openDetail(post));
+          postListEl.appendChild(item);
+        });
+      }
+
+      function openDetail(post) {
+        detailTitleEl.textContent = post.title;
+        detailAuthorEl.textContent = post.author;
+        detailTimeEl.textContent = post.time;
+        detailContentEl.textContent = post.content;
+        countTagEl.textContent = `共 ${post.comments.length} 条评论`;
+
+        commentListEl.innerHTML = '';
+        post.comments.forEach(c => {
+          const cItem = document.createElement('div');
+          cItem.className = 'focix_comment_item';
+          cItem.innerHTML = `
+          <div class="focix_comment_avatar"></div>
+          <div class="focix_comment_main">
+          <div class="focix_comment_top">
+          <div class="focix_comment_user">${c.user}</div>
+          <div class="focix_comment_floor">${c.floor}</div>
+          </div>
+          <div class="focix_comment_text">${c.text}</div>
+          </div>
+          `;
+          commentListEl.appendChild(cItem);
+        });
+
+        postListEl.style.display = 'none';
+        detailViewEl.classList.add('active');
+        detailViewEl.scrollTop = 0;
+      }
+
+      backBtnEl.addEventListener('click', () => {
+        detailViewEl.classList.remove('active');
+        postListEl.style.display = 'flex';
+      });
+
+      renderList();
+    })();
+  </script>
+</div><style>html,body{margin:0;background:#000;height:100%}body{display:grid;place-items:center}.focix_forum_sandbox{width:calc(100% - 24px);height:min(720px,calc(100dvh - 16px))!important;margin:0 auto!important}</style>
+<script>addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();parent.postMessage({type:'ai-demo-close'},location.origin);}});</script></body></html>

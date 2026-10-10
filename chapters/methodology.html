@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>以情绪洞察驱动内容与增长</title>
+  
+  
+  
+  
+
+  <style>
+    :root {
+      --bg-black: #060608;
+      --silver-bright: #ffffff;
+      --silver-main: #d4d7e0;
+      --silver-muted: #8c909c;
+      --silver-num: #e6e8ee;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background-color: var(--bg-black);
+      color: var(--silver-bright);
+      font-family: 'Noto Serif SC', serif;
+      user-select: none;
+    }
+
+    .font-cinzel {
+      font-family: 'Cinzel', serif;
+    }
+
+    /* Ambient deep luxury dark field */
+    .dark-canvas {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 36%, #0d0d12 0%, #060608 82%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Fullscreen SVG container for the liquid mercury filament */
+    #svg-stage {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 3;
+      transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Borderless organic methodology nodes */
+    .method-node {
+      position: absolute;
+      border: none !important;
+      outline: none !important;
+      background: transparent !important;
+      opacity: 0;
+      filter: blur(12px);
+      transform: translateY(16px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                  filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .method-node.awakened {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .method-node:hover .node-title {
+      color: #ffffff;
+      text-shadow: 0 0 16px rgba(255, 255, 255, 0.45);
+    }
+
+    /* Keep stage titles strictly single-line across resolutions */
+    .node-title {
+      white-space: nowrap;
+      letter-spacing: 0.03em;
+    }
+
+    /* Master Title container */
+    .master-title-wrap {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      opacity: 0;
+      filter: blur(14px);
+      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                  filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    .master-title-wrap.awakened {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+
+    /* Mid-wide tapered divider */
+    .tapered-hairline {
+      height: 1px;
+      width: 100%;
+      max-width: 440px;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.6) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+    }
+  </style>
+<link rel="stylesheet" href="methodology.css?v=3">
+</head>
+
+<body class="relative w-screen h-screen overflow-hidden cursor-pointer">
+  <div class="dark-canvas"></div>
+
+  <!-- SVG Liquid Mercury Light Stage -->
+  <canvas id="filament-stage" aria-hidden="true"></canvas>
+
+  <!-- Master Headline (Awakened at final stage) -->
+  <div id="master-title" class="master-title-wrap top-[5%] md:top-[7%] w-[92%] max-w-4xl flex flex-col items-center text-center">
+    <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-light tracking-[0.16em] text-white leading-tight mb-3">
+      以情绪洞察驱动内容与增长
+    </h1>
+    <div class="tapered-hairline mb-3.5"></div>
+    <p class="text-xs sm:text-[13.5px] text-neutral-300 font-light tracking-widest leading-relaxed max-w-2xl opacity-90">
+      从用户需求识别，到互动体验设计，再到内容传播与策略迭代，形成可复用的创作路径。
+    </p>
+  </div>
+
+  <!-- Four Methodology Nodes in Organic Spatial Constellation -->
+  <main id="nodes-container" class="relative z-10 w-full h-full">
+    <!-- Node 01: Low-left anchor -->
+    <div id="node-0" class="method-node left-[4%] sm:left-[6%] top-[60%] sm:top-[62%] w-[90%] sm:w-[320px] md:w-[350px]">
+      <div class="font-cinzel text-3xl sm:text-4xl text-[var(--silver-num)] font-light tracking-widest mb-1.5 opacity-85">
+        01
+      </div>
+      <h2 class="node-title text-[15px] sm:text-[16px] text-white font-normal mb-2 tracking-wide transition-all duration-300">
+        跨媒介洞察<span class="text-neutral-500 mx-2 font-light">｜</span>发现未被满足的需求
+      </h2>
+      <p class="text-xs sm:text-[13px] text-[var(--silver-muted)] font-light leading-relaxed">
+        观察小说、影视及线上社群中的情感偏好，识别主流内容之外的细分需求与市场机会。
+      </p>
+    </div>
+
+    <!-- Node 02: Mid-high crest -->
+    <div id="node-1" class="method-node left-[27%] sm:left-[29%] top-[33%] sm:top-[31%] w-[90%] sm:w-[320px] md:w-[350px]">
+      <div class="font-cinzel text-3xl sm:text-4xl text-[var(--silver-num)] font-light tracking-widest mb-1.5 opacity-85">
+        02
+      </div>
+      <h2 class="node-title text-[15px] sm:text-[16px] text-white font-normal mb-2 tracking-wide transition-all duration-300">
+        体验设计<span class="text-neutral-500 mx-2 font-light">｜</span>让情绪需求成为可参与的故事
+      </h2>
+      <p class="text-xs sm:text-[13px] text-[var(--silver-muted)] font-light leading-relaxed">
+        将人物关系与情感张力转化为角色设定、交互规则及阶段性反馈，增强用户代入与持续探索的动机。
+      </p>
+    </div>
+
+    <!-- Node 03: Lower-mid dip -->
+    <div id="node-2" class="method-node left-[50%] sm:left-[52%] top-[66%] sm:top-[64%] w-[90%] sm:w-[320px] md:w-[350px]">
+      <div class="font-cinzel text-3xl sm:text-4xl text-[var(--silver-num)] font-light tracking-widest mb-1.5 opacity-85">
+        03
+      </div>
+      <h2 class="node-title text-[15px] sm:text-[16px] text-white font-normal mb-2 tracking-wide transition-all duration-300">
+        传播运营<span class="text-neutral-500 mx-2 font-light">｜</span>让内容进入适合它的受众圈层
+      </h2>
+      <p class="text-xs sm:text-[13px] text-[var(--silver-muted)] font-light leading-relaxed">
+        结合平台分发机制与社群文化，灵活运用自然流量、内容预热和话题传播，扩大作品触达。
+      </p>
+    </div>
+
+    <!-- Node 04: Upper-right ascension (No wrap on '平衡') -->
+    <div id="node-3" class="method-node left-[71%] sm:left-[73%] top-[35%] sm:top-[33%] w-[92%] sm:w-[360px] md:w-[390px] lg:w-[420px]">
+      <div class="font-cinzel text-3xl sm:text-4xl text-[var(--silver-num)] font-light tracking-widest mb-1.5 opacity-85">
+        04
+      </div>
+      <h2 class="node-title text-[15px] sm:text-[16px] text-white font-normal mb-2 tracking-wide transition-all duration-300">
+        策略迭代<span class="text-neutral-500 mx-2 font-light">｜</span>在增长效果与风险之间寻找平衡
+      </h2>
+      <p class="text-xs sm:text-[13px] text-[var(--silver-muted)] font-light leading-relaxed">
+        结合用户反馈、作品表现与社区环境变化，调整内容定位，并将经验迁移至后续创作。
+      </p>
+    </div>
+  </main>
+
+  <script src="methodology.js?v=4"></script>
+<script src="scroll-bridge.js"></script></body>
+</html>

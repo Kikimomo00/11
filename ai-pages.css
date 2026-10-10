@@ -1,0 +1,45 @@
+.ai-shell{position:fixed;inset:0;z-index:35;background:#000;color:#bcbcbc;font-family:Arial,"Microsoft YaHei",sans-serif;isolation:isolate}
+.ai-shell[hidden]{display:none}
+.ai-scroll{height:100%;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y mandatory;scrollbar-width:none;overscroll-behavior:contain}
+.ai-scroll::-webkit-scrollbar{display:none}
+.ai-track{height:400%;position:relative}
+.ai-stop{position:absolute;left:0;width:1px;height:25%;scroll-snap-align:start;scroll-snap-stop:always;pointer-events:none}
+.ai-view{position:sticky;top:0;height:100svh;overflow:hidden}
+.ai-back,.ai-demo-close{position:absolute;left:6vw;top:32px;border:0;background:none;color:#aaa;padding:12px;cursor:pointer;font-size:23px;z-index:5;line-height:1}
+.ai-chapter-label{position:absolute;right:7vw;top:44px;font-size:10px;letter-spacing:.16em;color:#777}
+.ai-heading{position:absolute;top:13.5%;left:8%;right:8%;display:flex;justify-content:space-between;align-items:center;gap:6vw}
+.ai-heading h2{font:normal clamp(24px,3vw,44px)/1.1 Georgia,"Times New Roman",serif;letter-spacing:-.035em;color:#d4d4d4;margin:0;max-width:510px}
+.ai-heading h2 span{display:block;font-size:.56em;letter-spacing:.025em;color:#8c8c8c;margin-top:12px}
+.ai-heading p{max-width:400px;font-size:11px;line-height:2.1;letter-spacing:.04em;color:#858585;margin:0}
+.ai-arena{position:absolute;left:0;right:0;top:29%;height:43%;perspective:1100px;perspective-origin:50% 50%;transform-style:preserve-3d;pointer-events:none}
+.ai-ring{position:absolute;inset:0;transform-style:preserve-3d}
+.ai-card{position:absolute;left:50%;top:50%;width:clamp(180px,26vw,320px);height:min(36vh,320px);aspect-ratio:1;max-width:36vh;padding:0;border:0;background:#111;cursor:pointer;transform-style:preserve-3d;backface-visibility:hidden;pointer-events:auto;will-change:transform,opacity;box-shadow:0 20px 55px #0009}
+.ai-card img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(1);transition:filter .45s,opacity .45s}
+.ai-card:hover img{filter:grayscale(0);opacity:.94}
+.ai-card::after{content:'↗';position:absolute;right:14px;bottom:12px;color:white;font-size:22px;opacity:0;transform:translateY(5px);transition:opacity .3s,transform .3s;text-shadow:0 1px 12px #000}
+.ai-card:hover::after,.ai-card:focus-visible::after{opacity:1;transform:none}
+.ai-card:focus-visible{outline:1px solid #ccc;outline-offset:7px}
+.ai-caption{position:absolute;top:76%;left:50%;width:min(660px,76vw);transform:translateX(-50%);text-align:center}
+.ai-caption h3{font:normal 19px/1.5 "Songti SC",SimSun,serif;letter-spacing:.12em;margin:0 0 12px;color:#cecece}
+.ai-caption h3 span{font:italic 11px Georgia,serif;letter-spacing:.08em;color:#777;margin-right:16px}
+.ai-caption p{font-size:11px;line-height:2;letter-spacing:.025em;color:#828282;margin:0;min-height:66px}
+.ai-controls{position:absolute;bottom:3%;left:50%;transform:translateX(-50%);display:flex;gap:22px;align-items:center}
+.ai-controls button{padding:9px 10px;border:0;background:none;color:#797979;cursor:pointer;font:12px Georgia,serif;transition:color .25s}
+.ai-controls button:hover,.ai-controls button[aria-current]{color:#eee}
+.ai-controls .ai-dot{padding:10px 2px;position:relative}
+.ai-dot[aria-current]::after{content:'';height:1px;background:#aaa;position:absolute;bottom:5px;left:0;right:0}
+.ai-demo{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;border:0;padding:0;background:#000;color:#bcbcbc;overflow:hidden}
+.ai-demo::backdrop{background:#000}
+.ai-demo-header{height:70px;display:flex;align-items:center;justify-content:center;font-size:11px;letter-spacing:.16em;color:#929292}
+.ai-demo-close{top:20px;font-size:21px}
+.ai-demo iframe{width:100%;height:calc(100% - 70px);border:0;display:block;background:#000}
+.ai-loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;letter-spacing:.12em;color:#666;pointer-events:none}
+body.ai-open>main{visibility:hidden}
+@media(max-width:700px){.ai-heading{top:13%;display:block;left:8%;right:8%}.ai-heading h2{font-size:29px}.ai-heading h2 span{display:inline;margin-left:10px;font-size:15px}.ai-heading p{margin-top:20px;font-size:10px;line-height:1.9;max-width:390px}.ai-arena{top:33%;height:35%}.ai-card{width:49vw;height:49vw;max-width:30vh;max-height:30vh}.ai-caption{top:71%;width:82vw}.ai-caption h3{font-size:16px;margin-bottom:10px}.ai-caption p{font-size:10px;line-height:1.9}.ai-controls{bottom:2%;gap:15px}.ai-chapter-label{font-size:9px}.ai-back{left:5vw}.ai-demo-header{padding-left:55px;font-size:10px}}
+@media(max-height:620px) and (min-width:701px){.ai-heading{top:15%}.ai-heading h2{font-size:29px}.ai-heading h2 span{margin-top:5px}.ai-arena{top:31%;height:34%}.ai-card{height:30vh;max-width:30vh}.ai-caption{top:69%}.ai-caption p{font-size:10px;line-height:1.7}.ai-controls{bottom:1%}}
+@media(prefers-reduced-motion:reduce){.ai-card,.ai-card img{transition:none;will-change:auto}}
+
+.ai-card::after{display:none}
+.ai-image-credit{position:absolute;top:71%;left:0;width:100%;text-align:center;font-size:9px;letter-spacing:.08em;color:#565656;margin:0;pointer-events:none}
+@media(max-width:700px){.ai-image-credit{top:66.5%;font-size:8px}}
+@media(max-height:620px) and (min-width:701px){.ai-image-credit{top:64%}}

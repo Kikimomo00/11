@@ -1,0 +1,30 @@
+/* Shared chapter shell and a floating glass navigation dock. */
+.chapter-embed{position:fixed;inset:0;z-index:24;background:#030305;outline:none;isolation:isolate}
+.chapter-embed[data-page=methodology]{background:#060608}
+.chapter-embed .profile-header{position:relative;z-index:2}
+.chapter-stars{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+.chapter-embed[data-page=methodology] .chapter-stars{display:none}
+.chapter-embed iframe{position:absolute;inset:104px 0 108px;width:100%;height:calc(100% - 212px);border:0;background:transparent}
+.chapter-pagination{position:fixed;left:50%;bottom:max(22px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:29;display:grid;grid-template-columns:repeat(3,1fr);width:318px;max-width:calc(100% - 36px);padding:3px 5px;border-radius:28px;border:1px solid #f2e0ef20;background:linear-gradient(150deg,#ffffff0f,#ffffff03 42%,#e1cfe80b),#14131880;backdrop-filter:blur(22px) saturate(135%);-webkit-backdrop-filter:blur(22px) saturate(135%);box-shadow:0 8px 24px #0005,inset 0 1px 0 #ffffff1a,inset 0 -1px 0 #ffffff12;isolation:isolate}
+.chapter-pagination::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(ellipse 90px 50px at var(--dock-x,50%) var(--dock-y,0%),#fff2,transparent 85%);opacity:0;transition:opacity .3s}
+.chapter-pagination:hover::before{opacity:1}
+.chapter-pagination a{position:relative;z-index:1;display:flex;gap:7px;align-items:center;justify-content:center;min-height:32px;color:#8d8994;text-decoration:none;font-size:11px;letter-spacing:.04em;white-space:nowrap;border-radius:26px;transition:color .35s,text-shadow .35s}
+.chapter-pagination a span{font:italic 10px Georgia,serif;opacity:.65}
+.chapter-pagination a[aria-current],.chapter-pagination a:hover{color:#f3edf5;text-shadow:0 0 12px #e8d4f044}
+.chapter-pagination a:focus-visible{outline:1px solid #ddd;outline-offset:2px}
+body.evidence-open .chapter-pagination{display:none}
+.chapter-body{padding-bottom:150px}
+.characters-page{scrollbar-width:none}.characters-page::-webkit-scrollbar{display:none}
+@media(max-width:600px){.chapter-embed iframe{inset:88px 0 102px;height:calc(100% - 190px)}.chapter-pagination{bottom:18px;width:300px;padding:3px 5px}.chapter-pagination a{font-size:10px;min-height:32px;gap:6px}.chapter-embed .profile-header{padding-top:24px}.chapter-body{padding-bottom:140px}}
+@media(prefers-reduced-motion:reduce){.chapter-pagination *{transition:none!important}}
+
+/* Continuous chapter flow; each composition keeps its own breathing room. */
+.characters-page{scroll-snap-type:y proximity;scroll-behavior:auto;overflow-x:hidden}
+.chapter-flow-page{position:relative;min-height:100svh;scroll-snap-align:start;isolation:isolate;background:#000;overflow:hidden}
+.chapter-flow-page:not(.chapter-flow-intro){height:100svh;background:#030305}
+.chapter-flow-page[data-page=methodology]{background:#060608}
+.chapter-flow-page iframe{position:absolute;top:104px;left:0;width:100%;height:calc(100% - 212px);border:0;background:transparent}
+.chapter-flow-page .chapter-stars{z-index:-1}
+.chapter-flow-page .chapter-body{padding-bottom:100px}
+.characters-page.flow-modal{overflow:hidden}
+@media(max-width:600px){.chapter-flow-page iframe{top:88px;height:calc(100% - 190px)}}

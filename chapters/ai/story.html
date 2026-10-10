@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>温济迷局</title>
+<style>
+:root{--bg:#0c0d10;--card:#16181d;--tx:#e6e8eb;--tx2:#90949c;--gold:#c9a86a;--bar:#22252a;--bd:#2b2f38;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",serif;background:var(--bg);color:var(--tx);display:flex;justify-content:center;align-items:center;padding:8px}
+#game-container{width:100%;max-width:480px;height:min(calc(100dvh - 16px),820px);background:var(--card);box-shadow:0 10px 40px rgba(0,0,0,.7);border-radius:8px;border:1px solid var(--bd);display:flex;flex-direction:column;overflow:hidden}
+header{flex:none;padding:14px 16px 10px;text-align:center;border-bottom:1px solid var(--bd);background:linear-gradient(180deg,#121418,#16181d)}
+h1{font-size:1.2rem;color:var(--gold);letter-spacing:3px;font-weight:600}
+.subtitle{font-size:.72rem;color:var(--tx2);margin-top:3px;letter-spacing:1px}
+#turn-indicator{margin-top:8px;font-size:.78rem;color:#fff;background:#0f1013;display:inline-block;padding:2px 12px;border-radius:12px;border:1px solid var(--bd)}
+#stats-panel{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;padding:10px 16px;background:rgba(0,0,0,.25);border-bottom:1px solid var(--bd)}
+.stat-label{font-size:.72rem;color:var(--tx2);display:flex;justify-content:space-between;margin-bottom:3px}
+.progress-bar{height:5px;background:var(--bar);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;transition:width .4s ease}
+.fill-stat1{background:#3fa169}.fill-stat2{background:#3e7cd4}.fill-stat3{background:#d4433e}.fill-stat4{background:#d43e8d}
+#game-area{flex:1;min-height:0;padding:18px 16px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#game-area::-webkit-scrollbar{width:4px}
+#game-area::-webkit-scrollbar-thumb{background:#33373f;border-radius:2px}
+.menu-container{display:flex;flex-direction:column;gap:12px;max-width:320px;margin:40px auto 0}
+.menu-btn{background:#1c1f26;border:1px solid var(--bd);padding:15px;cursor:pointer;transition:all .25s;text-align:center;border-radius:4px}
+.menu-btn:hover{border-color:var(--gold);color:var(--gold);background:#232730}
+.category-container{display:flex;flex-direction:column;gap:10px}
+.category-card{background:#1c1f26;border:1px solid var(--bd);padding:15px;cursor:pointer;transition:all .25s;border-radius:4px}
+.category-card:hover{border-color:var(--gold);transform:translateY(-1px)}
+.cat-title{font-size:1rem;color:var(--gold);font-weight:600;margin-bottom:3px}
+.cat-desc{font-size:.78rem;color:var(--tx2);line-height:1.4}
+.pick-hint{font-size:.8rem;color:var(--tx2);margin-bottom:12px;text-align:center}
+.event-box,.result-screen{animation:fadeIn .35s ease}
+.event-tag{font-size:.72rem;color:var(--gold);letter-spacing:1px;margin-bottom:5px}
+.event-tag .fu{display:inline-block;margin-left:6px;padding:0 6px;border:1px solid var(--gold);border-radius:8px;font-size:.66rem}
+.event-title{font-size:1.08rem;color:#fff;margin-bottom:12px}
+.event-desc{font-size:.88rem;line-height:1.7;color:#c4c7cc;margin-bottom:16px;background:rgba(0,0,0,.18);padding:13px;border-radius:4px;border-left:2px solid var(--gold)}
+.choice-btn{background:#1c1f26;border:1px solid var(--bd);color:#d1d5db;padding:12px 14px;width:100%;text-align:left;margin-bottom:9px;cursor:pointer;transition:all .2s;border-radius:4px;font-size:.88rem;line-height:1.5;font-family:inherit}
+.choice-btn:hover{border-color:var(--gold);color:#fff;background:#232730}
+.result-title{font-size:.95rem;color:var(--gold);margin-bottom:10px}
+.result-text{font-size:.88rem;line-height:1.75;color:#d1d5db;background:rgba(0,0,0,.25);padding:14px;border-radius:4px;margin-bottom:18px}
+.ending-screen{text-align:center;padding:10px 4px;animation:fadeIn .5s ease}
+.ending-icon{font-size:2.8rem}
+.ending-title{font-size:1.3rem;color:var(--gold);margin:10px 0 12px;font-weight:600}
+.ending-desc{font-size:.88rem;line-height:1.8;color:#c4c7cc;margin-bottom:20px;text-align:justify;background:rgba(0,0,0,.2);padding:14px;border-radius:4px}
+.btn-action{background:var(--gold);color:#0c0d10;border:none;padding:10px 22px;font-weight:600;cursor:pointer;border-radius:4px;margin:4px;font-size:.88rem;font-family:inherit}
+.btn-secondary{background:transparent;color:var(--tx);border:1px solid var(--bd);padding:9px 20px;cursor:pointer;border-radius:4px;margin:4px;font-size:.88rem;font-family:inherit}
+.center{text-align:center;margin-top:16px}
+#log-area{flex:none;padding:9px 16px;font-size:.76rem;color:var(--tx2);border-top:1px solid var(--bd);min-height:36px;display:flex;align-items:center}
+.story-section{background:rgba(0,0,0,.2);padding:13px;border-radius:4px;margin-bottom:12px;line-height:1.7;font-size:.84rem;color:#c4c7cc}
+.story-section p{margin-bottom:8px}.story-section p:last-child{margin-bottom:0}
+.character-card{background:#1a1c22;padding:10px 12px;margin-bottom:8px;border-left:2px solid var(--gold);border-radius:0 4px 4px 0}
+.character-name{color:var(--gold);font-weight:600;margin-bottom:3px;font-size:.86rem}
+.character-desc{font-size:.78rem;color:var(--tx2);line-height:1.5}
+.endings-gallery{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.ending-card{background:#1a1c22;padding:14px 10px;border:1px solid var(--bd);border-radius:4px;text-align:center}
+.ending-card.locked{opacity:.35}
+.ending-card.unlocked{border-color:var(--gold);cursor:pointer}
+.ending-card .ic{font-size:1.6rem;margin-bottom:6px}
+.ending-card .t{font-size:.84rem;color:var(--gold);margin-bottom:3px}
+.ending-card .h{font-size:.7rem;color:var(--tx2)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div id="game-container">
+<header>
+<h1>温济迷局</h1>
+<div class="subtitle">利益、名望与深渊的边缘博弈</div>
+<div id="turn-indicator" class="hidden"></div>
+</header>
+<div id="stats-panel" class="hidden">
+<div><div class="stat-label"><span>利润</span><span id="val-stat1"></span></div><div class="progress-bar"><div class="progress-fill fill-stat1" id="bar-stat1"></div></div></div>
+<div><div class="stat-label"><span>掌控力</span><span id="val-stat2"></span></div><div class="progress-bar"><div class="progress-fill fill-stat2" id="bar-stat2"></div></div></div>
+<div><div class="stat-label"><span>丑闻度</span><span id="val-stat3"></span></div><div class="progress-bar"><div class="progress-fill fill-stat3" id="bar-stat3"></div></div></div>
+<div><div class="stat-label"><span>亲密度</span><span id="val-stat4"></span></div><div class="progress-bar"><div class="progress-fill fill-stat4" id="bar-stat4"></div></div></div>
+</div>
+<div id="game-area"></div>
+<div id="log-area"></div>
+</div>
+
+<script>
+const CFG={maxTurn:12,init:[50,50,10,50]};
+
+const ENDINGS={
+bad_scandal:{id:"全线溃败",title:"全线溃败",icon:"⚡",desc:"关于两人的传闻终于在圈层内彻底引爆。温济集团的生物医药全链条业务受舆论冲击引发连锁调查，旗下私立医院与供应渠道遭遇全面抵制。名誉尽毁，大门紧闭，你被隔绝在一切体面生活之外，而那个年轻男人也已抽身回归家族自保，留下不可收拾的残局。"},
+bad_collapse:{id:"暗淡退场",title:"暗淡退场",icon:"🥀",desc:"掌控力的丧失与利益的断流让你彻底边缘化。你在温济集团的棋盘上沦为无足轻重的弃子，女儿如期完成了她的体面婚事，丈夫守着冷漠的相敬如宾，所有人都在自己的轨道上前行，唯独你失去了所有话语权与存在感。"},
+co_ruler:{id:"幕后权柄",title:"幕后权柄",icon:"👑",desc:"经过整整一年的缜密布局，你在温济生物医药的暗流中站稳了脚跟。凭借惊人的掌控力与他私下默许的特权，你悄无声息地主导了多个核心渠道的利益分配。在维持家族表面荣光的同时，你已成为那座庞大医疗帝国深处不可替代的决策者。"},
+indulgence:{id:"深渊羁绊",title:"深渊羁绊",icon:"🍷",desc:"规则被尽数撕碎。集团的发展如常推进，但两人之间的关系早已脱轨。在极度紧密的私密联系与情感纠葛中，他享受着你对他的牵制，而你也习惯了这种危险的纵容。你们在体面外壳下共享着只属于两人的隐秘特权。"},
+iron_lady:{id:"冷酷独行",title:"冷酷独行",icon:"♟️",desc:"你彻底利用了这段关系，将所有筹码收拢到自己手中。温济集团的数项专利投资成为你的个人护城河，你在资本席位上赢得了绝对的主动权。情感被彻底抽离，哪怕是他也只能重新以纯粹理性的目光注视你这位真正的博弈对手。"},
+equilibrium:{id:"体面暗涌",title:"体面暗涌",icon:"⚖️",desc:"十二个月过去，一切平稳如水。温济生物医药依然稳居行业鳌头，女儿的订婚宴盛大圆满，丈夫依然维持着得体的体面。没有人察觉那场发生过的隐秘涟漪，你在这场危险的博弈中毫发无损，将秘密永远锁入了高墙。"}
+};
+
+/* 事件构造：E(id,类别,标题,描述,选项A,选项B,{req,fu,g})
+   选项 = [文字,结果,[利润,掌控,丑闻,亲密],设置的flag(可选)]
+   fu=后续事件(优先触发)；g=数值门槛事件(触发权重更高) */
+const E=(id,cat,title,desc,a,b,o)=>Object.assign({id,cat,title,desc,ch:[a,b],req:()=>true},o||{});
+const after=(s,k)=>s.f[k]&&s.f[k]<s.turn;
+
+const EVENTS=[
+/* ===== cat1 商业 ===== */
+E("b1","cat1","特殊原料供应危机","温济核心抗癌药的特种植物原料产地出了变故。温成资主张动用备用渠道强行压价，温其琛在晨会上没有表态，散会后把质检数据递到了你面前。",
+["动用人脉打通替代产地，稳扎稳打","你联系旧相识为温济补上了原料缺口。温成资对这桩干练的处置颇为赞许，温其琛在车上淡淡扫了你一眼，收下了这份人情。",[12,8,-2,2],"b1a"],
+["支持压价，把季报利润做到最漂亮","账面数据亮眼，但下游几家合作医院传出了微词，公关渠道暂时把动静压了下去。",[18,-4,8,-2],"b1s"]),
+E("b2","cat1","专利壁垒与合资谈判","一家外资器械巨头想绕开温济的专利壁垒。温其琛打算用法务手段封杀对方，而你手里恰好有对方高管的背景资料。",
+["主导非公开会面，逼对方签下全面授权","你在包厢里不动声色地谈完，为温济锁死了五年独家渠道。温其琛倚在门边看你收起文件，眼里多了一点探究。",[15,14,4,4],"b2d"],
+["不插手，让家族律师团全面围剿","诉讼声势浩大，对方很快妥协，但财经媒体开始连番追问温济的垄断地位。",[8,-2,10,-2]],{g:1,req:s=>s.c>=55}),
+E("b3","cat1","温稚嘉的资助请求","继弟温稚嘉找到你，希望温济以集团名义赞助他的先锋音乐会。温成资不喜欢他在艺术上花心思，温其琛则冷眼旁观。",
+["以艺术基金名义资助，化解家里的暗流","赞助办得很体面，稚嘉道谢时恭顺得挑不出毛病。温其琛晚上发来一条简短的信息，只字没提赞助，却问了你周末的安排。",[-6,10,-4,8],"b3a"],
+["客气回绝，维持温家原有的平衡","稚嘉低眉顺眼地道谢离开，没起波澜。温其琛在聚餐时态度自若，显然这符合他的预期。",[4,6,-2,-2]]),
+E("b4","cat1","私立疗养院董事会扩充","温济旗下的高端疗养院要增补两名独立董事。温成资想安插旧部，温其琛却在材料上圈出了空缺，把签字笔留在了你面前的桌沿。",
+["推荐你在名媛圈结识的资深财会人士","新董事顺利入驻，你在疗养院的财务流向上有了直接的眼线。温其琛看着名单，评价这是一手漂亮的回旋。",[10,16,2,6]],
+["让温其琛全权定夺，不碰核心资产","他安插了自己的班底，集团上下再次称赞这位继承人的执行力，而你仍是被庇护的贵客。",[8,-5,-4,8]],{g:1,req:s=>s.c>=60}),
+E("b5","cat1","压价的后遗症","上月压价的后果浮出水面：三家合作医院联名致函，要求温济说明原料品质。温成资把信放在桌上，没有评论，只是看着你。",
+["主动整改并补偿，把事情压回内部","整改花了一笔钱，但联名信被撤回，财经版面没有出现任何标题。",[-10,4,-8,0]],
+["动用公关渠道强行压下，对医院施压","风波暂时平息，医院方面却记住了这笔账，圈子里多了几句不太好听的话。",[6,-2,10,0],"b5p"],{fu:1,req:s=>after(s,"b1s")}),
+E("b6","cat1","独家渠道的加码","你促成的授权协议让对方尝到了甜头，现在他们主动提出追加合作，条件是温济开放一部分原料配额。",
+["接受加码，扩大合作规模","合作规模翻了一倍，利润可观，只是温济对外资伙伴的依赖又深了一层。",[14,6,4,0]],
+["只续一年，保留谈判余地","对方有些失望，但尊重你的谨慎。温其琛评价你「手很稳」。",[6,4,-2,0]],{fu:1,req:s=>after(s,"b2d")}),
+E("b7","cat1","绕开你的闭门会","你偶然发现，温成资在没有通知你的情况下召开了一场闭门会，议题涉及你分管的渠道。会议室门口站着温稚嘉，礼貌地向你点头。",
+["请温其琛出面，把你的位置重新放回会议桌","他笑着答应了，转身进去的时候说：「那您欠我一次。」你知道这笔账会以什么形式还。",[4,-6,0,10]],
+["自己推门旁听，直接让所有人看见你","你在众目之下落座，温成资眼神微沉，却没有赶你。你拿回了话语权，也多了一个对手。",[0,10,6,-4]],{g:1,req:s=>s.c<=45}),
+E("b8","cat1","署名的项目","温其琛把一份新药渠道合作书推到你面前，署名栏里写着你的名字：「这个项目，我想让您来牵头。」",
+["接受署名，牵头这个项目","项目启动顺利，你的名字第一次出现在集团内部公告上。温其琛站在落地窗前，没有回头，只是说：「果然没看错。」",[12,8,8,10],"b8a"],
+["婉拒署名，建议以集团名义推进","他挑了挑眉，没有勉强，只把名字划掉。项目照常推进，你的名字没有留下痕迹。",[4,4,-4,-4]],{g:1,req:s=>s.i>=60}),
+E("b9","cat1","「您看着办」","你呈上的渠道方案，温其琛只回了四个字：「您看着办。」之后几天他在会上对你的提案不置可否，礼貌得像对待一位陌生的外部顾问。",
+["把决定权拉回来，自己拍板推进","你不再等他表态，直接签了字。结果不错，只是他看你的眼神里多了一点距离。",[6,8,0,-6]],
+["附上详尽的风险分析，等他的回应","他看完批注，难得地回了一条长消息，末尾加了一句：「您比我想得更细。」",[-2,4,0,8]],{g:1,req:s=>s.i<=42}),
+E("b10","cat1","稚嘉的音乐会邀请","你资助过的音乐会如期举行，稚嘉亲自递来邀请函，请你坐前排。温成资的助理也在宾客名单上。",
+["出席，礼貌地听完整场","全场安静。稚嘉演奏完向你的方向鞠躬，抬头时神情平静得看不出任何东西。温成资的助理在中场记了几笔。",[0,4,6,6]],
+["托词缺席，只送了花篮","花篮很体面，场面很安全。稚嘉发来一条短信道谢，措辞端正，没有多余的字。",[0,0,-2,0]],{fu:1,req:s=>after(s,"b3a")}),
+E("b11","cat1","Lorenzo 的田野数据合作","Lorenzo 教授递来一份「人类学与再生医学交叉研究」的合作书，要求共享部分医疗数据。温其琛读完，微微挑眉：「老师从不白给人情。」",
+["签下合作，在可控范围内共享数据","Lorenzo 笑着握了手，目光在你脸上多停了一秒。科研基金很快到账。",[12,-4,8,0],"b11a"],
+["婉拒，转投合规的研究机构","他没有追问，只是遗憾地摇了摇头，说「好的数据，总会找到出口」。",[-6,6,-4,0]]),
+E("b12","cat1","药监口的例行核查","药监部门对一款特管药的供货记录发起了例行核查，时间点巧得让人不安。温成资让你「配合一下」，语气平淡。",
+["主动提交完整材料，把流程走干净","核查顺利结束，没有留下任何口实。温成资对你的谨慎不置可否，但再没有人提起这件事。",[-8,4,-12,0]],
+["请人打招呼，把核查压缩到最短","核查三天就结束了，但你欠下了一个不该欠的人情。",[-4,8,8,0]],{g:1,req:s=>s.s>=35})
+,
+/* ===== cat2 社交 ===== */
+E("s1","cat2","年度慈善晚宴座次","沈婉秋负责排座，宋薇薇私下散布你和温家准女婿走得太近的闲话。主桌名单尚有争议，沈婉秋笑着征求你的建议。",
+["以温济大额捐赠为由，把宋薇薇调离主厅","宋薇薇脸色难看却不敢发作，太太圈的风向倒向了你。温其琛作为赞助代表，在全场目光中把第一杯香槟递到你手里。",[-8,12,6,6],"s1a"],
+["安排镜仪与温其琛同坐主位，自己退居次席","温家与任家联姻的美誉度再升，流言不攻自破。只是整场晚宴，温其琛的视线几乎没在舞台中心停过。",[0,-2,-12,4]]),
+E("s2","cat2","画展偶遇","丈夫任涉川陪着美甲师葛宜之出席私人画廊预展，被你撞个正着。任涉川神色局促，葛宜之谨慎而卑微，不远处几位熟人在低声交谈。",
+["从容上前，替丈夫向画廊主理人引荐","你温和而疏离的姿态让任涉川羞愧难当，葛宜之甚至不敢抬头。场面被化成一场寻常寒暄，太太团对你的涵养赞不绝口。",[0,8,-14,2],"s2a"],
+["冷淡颔首离开，再在温其琛的车上提起此事","任涉川心神不宁地赶回了家。温其琛听完，漫不经心地转着方向盘，嘴角带着一点若有若无的笑意。",[0,4,4,14],"s2b"]),
+E("s3","cat2","匿名敲诈信","一封匿名快件寄到你的私人信箱，里面是地下车库里温其琛俯身靠在你车窗前的模糊侧影。对方开价不菲，三日内汇入海外账户。",
+["交给温其琛，由他动用集团的安全渠道处理","次日发件人的联系方式彻底注销，底片原封不动送回你的梳妆台。温其琛只说：「这种粗劣的手段，不值得您费心。」",[-10,-4,-20,10]],
+["自己找私人调查员封口，不惊动他","你花重金买断了源头，保全了自己的独立底线，也没在他面前露出慌乱。",[-15,12,-15,-4],"s3p"],{g:1,req:s=>s.s>=35}),
+E("s4","cat2","女儿的深夜求助","镜仪回家，神色郁郁寡欢。她说在温其琛面前总觉得隔着一层雾，怎么乖巧也够不到他，语气里满是疲惫。",
+["安慰她，并指点如何迎合温家的规矩","镜仪靠在你怀里平静下来，又变回那个完美的乖乖女。温其琛随后几天对她温和了些，看你的眼神却更淡了。",[0,2,-8,-12]],
+["劝她不必勉强，适度保持独立","镜仪若有所思地回了房间。这番话拉近了母女的距离，也悄悄松动了温家自上而下的节奏。",[0,6,2,6]],{g:1,req:s=>s.i<=45}),
+E("s5","cat2","沈婉秋的试探","沈婉秋单独约你喝下午茶，笑容温柔：「听说镜仪和温少快要办仪式了，您真有福气。外头的闲话，您别往心里去。」她一句不提，却什么都问到了。",
+["顺势送上温济康养的合作机会，把她绑上同一条船","她笑得更真诚了，也更舍不得你出事了。",[8,6,-8,0],"s5a"],
+["装糊涂，拉上施雅致一起打圆场","场面圆了过去，可你没有真正拿到任何筹码。",[0,-6,-4,0]]),
+E("s6","cat2","钱娆的嫉妒","钱娆在茶会上「无意」提起：「听说镜仪嫁得这么好，真是福气，不像我家孩子，还得靠捐楼入学呢。」满桌的笑意僵了一下。",
+["借机反击，点出钱家孩子「捐校入学」的旧事","钱娆脸色惨白，茶会上每一双眼睛都记住了你的锋利。",[0,12,8,0],"s6e"],
+["笑着替她解围，转手给她孩子安排了体面的实习","钱娆欠了你一个人情，嘴也暂时闭上了。",[-8,4,-10,0]]),
+E("s7","cat2","周曼殊的茶盏","周曼殊请你喝茶。她翻出一叠照片，是镜仪与 Lorenzo 在咖啡厅的背影，语气平淡：「做母亲的，该管的要管。你说呢？」她没提温其琛，可每一口茶都有分量。",
+["顺着她的话，把她的注意力引向镜仪，换取自己的松绑","周曼殊满意地点了点头。你得到了喘息，代价是镜仪被推到了前面。",[0,12,-10,-8]],
+["替镜仪压下这件事，反过来查清照片的来源","你保住了女儿，也让周曼殊对你多了一层怀疑。",[-6,-4,8,6],"s7z"],{g:1,req:s=>s.turn>=4}),
+E("s8","cat2","书房里的等候","那次画展之后的深夜，任涉川在书房等你，桌上放着两杯茶。他想谈谈葛宜之，语气克制：「我想你应该知道真相。」",
+["坐下来坦诚谈，把边界划清楚","你们谈了很久。他没有辩解，也没有隐瞒，最后说会和葛宜之保持距离。这一夜，你们谁都没有失态。",[0,6,-6,-4]],
+["说一句「很晚了」，起身离开","他没有拦你。书房的灯亮到了天明。你没有得到答案，也没有失去任何筹码。",[0,-2,4,8]],{fu:1,req:s=>after(s,"s2a")||after(s,"s2b")}),
+E("s9","cat2","沈婉秋的回礼","沈婉秋送来一份回礼，附了一张药监口人脉的名片：「您帮了我，我自然也要帮您。」她笑得很得体，也很有分寸。",
+["收下人脉，往后用得上","这张名片在后来的某个下午派上了用场，但你也知道，人情从来不是单向的。",[6,6,4,0]],
+["婉拒，保持清爽的距离","她笑着收回名片，说「您真是谨慎」。你们之间的关系，维持在恰到好处的位置。",[0,2,-4,0]],{fu:1,req:s=>after(s,"s5a")}),
+E("s10","cat2","调查员的加价","你雇的调查员发来消息：他手里还有一份「备份」，想要再加一笔。他的语气恭敬，却清楚自己握着什么。",
+["付钱了结，换取彻底销毁","又一笔钱出去，换回了一张签字的销毁确认书。你不确定它值多少，但至少睡得着。",[-10,0,-8,0]],
+["反制施压，让他知道你也有他的把柄","你用一份旧案线索让他闭了嘴，事情压了下去，只是这种方式，你自己也不想多用。",[-4,10,6,-4]],{fu:1,req:s=>after(s,"s3p")}),
+E("s11","cat2","宋薇薇的示好","你的掌控力在圈里已不是秘密。宋薇薇亲自登门，带着一份厚礼，希望你向温家引荐她丈夫的经纪公司。",
+["收下人情，酌情引荐","她从此在太太团里成了你最响亮的声音，只是你知道，这种忠诚是有价的。",[4,10,2,0]],
+["冷处理，让她继续在门外等","她红着脸离开。太太团里的议论少了，只是有人开始觉得你难以接近。",[0,4,-4,0]],{g:1,req:s=>s.c>=65}),
+E("s12","cat2","默契得过分","慈善拍卖现场，有人当众问起你和温家的关系。你还没开口，温其琛已经含笑接过话头，语气自然得像在说一件无关紧要的小事。",
+["笑着道谢，随后当面与他保持距离","场面平稳过去。他看着你的背影，嘴角弯了一下，像在记下一个新的有趣之处。",[0,6,-4,-4]],
+["顺着他的节奏，把这场戏配合到底","全场都以为这是一次得体的社交，只有你们两个人知道，其中有几分真。",[0,-4,8,10]],{g:1,req:s=>s.i>=65})
+,
+/* ===== cat3 私域 ===== */
+E("p1","cat3","暴雨夜的半山私宅","任涉川出差，镜仪留宿学校。一场暴雨把温其琛滞留在你家。他换了干爽的衬衫，站在走廊尽头看着你，身上带着广藿香与烟草的极淡冷香。",
+["为他倒一杯温水，催他去客房休息","他接过水杯时，指尖碰到了你的手背。他没有退开，低头看着你，语气带着调侃：「这么急着赶我走？」",[0,-4,4,14],"p1a"],
+["冷淡告诫他注意分寸，各自回房锁门","他笑了笑，后退半步，客气地道了声晚安。整夜客房没有任何动静，气氛却沉得让人难以入眠。",[0,10,-4,-8]]),
+E("p2","cat3","高定沙龙的试衣间","在会员制礼服沙龙里，你正对着镜子整理后背的拉链。帘子被挑开一条缝，温其琛走进来，顺手将内侧的锁扣上了。",
+["任由他站在身后，替你把拉链拉上","他的手指在你后颈停了一瞬，目光在镜中与你相撞。直到店员在帘外轻声询问，他才慢条斯理地收手离开。",[0,-8,8,18],"p2a"],
+["反手夺过拉链，要求他立刻出去","他挑了挑眉，拉开门帘，甚至得体地替店员接过托盘。他没有生气，眼底浮起的是发现新有趣之处的兴味。",[0,8,-2,2]],{g:1,req:s=>s.i>=55}),
+E("p3","cat3","书房暗格的钥匙","温其琛在自己的公寓里，当着你的面打开了书桌内侧的暗格。里面是温济数份未公开的股权代持书，他把其中一枚印鉴递了过来。",
+["接过印鉴，收下这份信任与牵扯","你接过了沉甸甸的印鉴。他凑到你耳侧低声笑了一句。这不只是利益共享，更是某种深不见底的同谋。",[15,12,6,20],"p3a"],
+["把暗格合上，拒绝卷入他最深的秘密","你退后一步。他收回手，眼里的温度淡了几分，换成了纯粹的理智。他锁好暗格，没再提这件事。",[0,6,-6,-14]],{g:1,req:s=>s.i>=70}),
+E("p4","cat3","露台上的较量","夜色渐深，他在露台上拿出一份准备递交董事会的决议，握着你的手腕，看似温和地把你按进扶手椅：「这件事，您来签字，好不好？」",
+["抽出手，居高临下地审视他","你没有顺从。他静静看着你，随后收回文件，低笑出声。你守住了主导，他眼里的兴趣反而更浓。",[5,15,0,6]],
+["顺着他的力道坐下，签下自己的名字","你签了字，他在你指尖落下一个极轻的吻。他得到了预想的顺从，而你也彻底绑上了这条飞速向前的船。",[12,-6,8,15]],{g:1,req:s=>s.c>=65&&s.i>=60}),
+E("p5","cat3","礼貌得像陌生人","他按约定来吃饭，迟到了二十分钟，礼貌地道歉，举止滴水不漏，却像在应付一位无关紧要的长辈。整顿饭他没有看你一眼。",
+["饭后主动约他到露台喝一杯","他意外地笑了：「您很少主动。」酒杯碰在一起，他的眼神终于落在了你身上。",[0,-4,4,14]],
+["顺着他的客气，只谈正事","他很配合，三言两语谈完事务。你拿回了节奏，他的距离也拉得更远。",[2,6,0,-8]],{g:1,req:s=>s.i<=40}),
+E("p6","cat3","被安排好的行程","你发现自己下周的行程、司机甚至衣帽间的定制都已被人「贴心」安排妥当。温其琛靠在门边，语气柔和：「您什么都不用操心，我替您想好了。」",
+["默许，享受被照顾的安排","他心情很好，替你理了理披肩。你清楚，这份体贴里，有一点你不该交出去的东西。",[0,-8,0,10]],
+["当面把自主权要回来","他愣了半秒，然后笑着点头：「是我考虑不周。」你拿回了主动，他看你的目光却深了几分。",[0,14,2,-6]],{g:1,req:s=>s.c<=40}),
+E("p7","cat3","纸牌与硬币","他在客厅里表演近景魔术，指间的硬币忽隐忽现：「猜猜看，在哪只手？」他笑得无辜。你知道他在试探：试探你会不会为了一场游戏认输。",
+["配合他，故意猜错","他满意地摊开手掌：「您总是这么给面子。」",[0,-6,0,14]],
+["当场点破手法，让他的得意落空","他愣了半秒，随即笑出声：「有意思，您比我想的还难骗。」",[0,12,0,-4],"p7m"]),
+E("p8","cat3","他今晚不太说话","温其琛坐在你家的客厅里，手机屏幕朝下扣在桌上，指尖在杯沿上轻轻敲着。温成资的几条消息，他一条也没有回。",
+["递上一杯酒，什么都不问","他接过酒杯，过了很久才开口：「您从来不问，这一点很难得。」",[0,-4,0,12]],
+["直接问他：你父亲又想要什么？","他先是一怔，随后笑了：「还是您直接。」他挑了几句说出来，足够你拿来做判断。",[0,8,0,-4]]),
+E("p9","cat3","落在你家的袖扣","暴雨夜的第二天，温其琛发来消息，说有一枚袖扣落在了你家，语气随意：「不急，您方便的时候给我就好。」",
+["亲自送过去，当面交还","他在门口接过袖扣，指腹擦过你的掌心，笑着说了句「辛苦您」。这一趟本可以不去。",[0,-2,6,6]],
+["交给管家，让司机送去","他收到后回了个简短的「多谢」，之后好几天没再联系，像是把这件事折了起来。",[0,6,-4,-6]],{fu:1,req:s=>after(s,"p1a")}),
+E("p10","cat3","魔术的赌注","他又来了，这次放下一枚硬币：「上次您赢了我，这次，我们赌一件事。您赢了，我答应您一件事。」他的笑意很淡，眼神却很认真。",
+["赢了之后，要他在镜仪面前多一些真诚","他沉默了几秒，点了头：「这个要求，倒是我没想到的。」",[0,8,0,4]],
+["赢了之后，要一份核心项目的内幕","他笑着把文件推过来：「您真是不肯吃亏。」你拿到了信息，也看到了他眼里一闪而过的兴味。",[8,6,2,-2]],{fu:1,req:s=>after(s,"p7m")}),
+E("p11","cat3","印鉴的去向","温成资察觉那枚印鉴不在儿子手里，在餐桌上不动声色地问了一句。温其琛端着酒杯，目光轻轻扫向你，显然把选择权留给了你。",
+["主动交还印鉴，把事情化解在餐桌之下","温成资点了点头，没有追问。你们都知道发生了什么，却谁也没有说出口。",[-6,-8,-10,-6]],
+["将计就计，让温成资以为印鉴仍在他手里","一场不动声色的博弈。你拿到了更多利益，也把自己更深地绑在了这个秘密里。",[10,10,12,0]],{fu:1,req:s=>after(s,"p3a")}),
+E("p12","cat3","订婚宴提前","晚餐时镜仪提出，想把订婚宴提前一个月。她说话时看了母亲一眼，温其琛靠在椅背上，也看着你，神情是礼貌的期待。",
+["支持提前，让一切尽早尘埃落定","镜仪露出放心的笑，温成资点头称许。温其琛在桌下没有任何动作，只是眼神淡淡地挪开了。",[0,-4,-6,6]],
+["建议延后，理由是时间太仓促","镜仪有些失落，温其琛却若有所思地看了你一会儿，嘴角弯了弯。",[0,6,4,-6]],{g:1,req:s=>s.turn>=3})
+];
+
+/* 兜底事件：当该类别没有可触发的新事件时使用，可重复 */
+const FB={
+cat1:{id:"fb1",cat:"cat1",title:"例行月度汇报",desc:"这个月没有大事。财务总监送来了月度报表，温其琛翻了两页，把问题留给了你：「您看看，哪里能再紧一点？」",ch:[["压缩开支，保守经营","账面稳了一些，没有人注意到这个月你做过什么。",[6,2,0,0]],["加大投入，试探新赛道","风险与收益并存，团队的积极性被点了起来。",[2,4,2,0]]]},
+cat2:{id:"fb2",cat:"cat2",title:"平静的茶会","desc":"又是一次例行的太太团下午茶，话题绕着孩子、首饰和新开的疗养中心打转，没有人提起不该提的事。",ch:[["谈笑自如，维持体面","你滴水不漏地应付了每一个话头，一切如常。",[0,2,-4,0]],["提前离席，节省精力","你找了个得体的理由离开，少了一些麻烦，也少了一些信息。",[0,0,0,0]]]},
+cat3:{id:"fb3",cat:"cat3",title:"平常的一个晚上",desc:"这一晚没有特别的事。温其琛发来一条消息，问您有没有新的茶可以推荐，语气随意，像是只想说说话。",ch:[["回一条消息，聊几句茶","他回得很快，话题从茶聊到了他最近在读的人类学论文。",[0,0,0,5]],["不回复，保持距离","他没有再发消息，这一晚过得很安静。",[0,2,0,-3]]]}
+};
+
+const $=id=>document.getElementById(id);
+const area=$("game-area"),logEl=$("log-area"),turnEl=$("turn-indicator"),panel=$("stats-panel");
+let unlocked=[];
+let state={turn:1,p:50,c:50,s:10,i:50,used:[],f:{}};
+const rand=a=>a[Math.floor(Math.random()*a.length)];
+const clamp=v=>Math.max(0,Math.min(100,v));
+
+function loadU(){try{const v=localStorage.getItem("wenji_secret_endings_v2");if(v)unlocked=JSON.parse(v)}catch(e){}}
+function saveU(){try{localStorage.setItem("wenji_secret_endings_v2",JSON.stringify(unlocked))}catch(e){}}
+
+function showMainMenu(){
+  panel.classList.add("hidden");turnEl.classList.add("hidden");
+  area.innerHTML=`<div class="menu-container"><div class="menu-btn" onclick="startGame()">开始游戏</div><div class="menu-btn" onclick="showBackground()">背景介绍</div><div class="menu-btn" onclick="showEndingsGallery()">结局图鉴</div></div>`;
+  logEl.innerText="欢迎进入温济迷局。请选择行动。";area.scrollTop=0;
+}
+
+window.showBackground=()=>{
+  area.innerHTML=`<div class="event-box"><div class="event-tag">档案记录</div><div class="event-title">背景与脉络</div>
+<div class="story-section"><p><strong>集团背景：温济生物医药</strong></p><p>温济并非寻常商贾，而是生物医药领域的隐形巨头。前身为清末御医创立的“温济堂”，历经数代转型，如今坐拥中西成药、原料供应、私立专科医院、前沿再生医学乃至特殊管制药品的垄断级供应链。温家行事低调，深居幕后，在政商两界树大根深。</p></div>
+<div class="story-section"><p><strong>你的身份与处境</strong></p><p>你是任涉川的妻子、任镜仪的母亲。保养得宜，风姿卓越，生活优渥体面，但婚姻早已沦为仪式化的相敬如宾。那个静谧的圣诞夜，女儿未来的夫婿——温济唯一的继承人温其琛，在流理台前从身后握住了你关水龙头的手。</p></div>
+<div class="story-section"><p><strong>核心人物</strong></p>
+<div class="character-card"><div class="character-name">温其琛（21岁）</div><div class="character-desc">温济继承人，你女儿的未婚夫。教养顶尖，松弛温润，骨子里却淡漠傲岸。他厌倦按部就班的人生，享受让对方在理智与诱导中主动靠近的过程。</div></div>
+<div class="character-card"><div class="character-name">任镜仪（18岁）</div><div class="character-desc">你的女儿。温婉文静，依赖你，也在无意识中承担着你的情感需求。即将嫁入温家，内心却渴望打破被规划好的完美人生。</div></div>
+<div class="character-card"><div class="character-name">任涉川（38岁）</div><div class="character-desc">你的丈夫，知名建筑设计公司CEO。成熟儒雅，克制体贴，恪守责任，却在生活的琐碎中，把精神寄托悄悄转向一位拼命生活的单亲母亲。</div></div>
+<div class="character-card"><div class="character-name">温成资 / 温稚嘉</div><div class="character-desc">前者冷血理性，视一切为利益砝码；后者是温家养子，清瘦安静的音乐生，表面温顺，心思深沉。</div></div></div>
+<div class="story-section"><p><strong>博弈规则</strong></p><p>12个月，每月选一类事务处理。事件不会重复，上月的选择可能带来后续；不同的数值状态，会触发不同的事件。</p><p>• <strong>利润</strong>：稳固商业利益，为博弈构筑底气</p><p>• <strong>掌控力</strong>：不在权势与支配中丧失主动权</p><p>• <strong>丑闻度</strong>：一旦爆表即是毁灭</p><p>• <strong>亲密度</strong>：温其琛对你的执着与依赖</p></div>
+<div class="center"><button class="btn-action" onclick="showMainMenu()">返回主菜单</button></div></div>`;
+  area.scrollTop=0;
+};
+
+window.showEndingsGallery=()=>{
+  loadU();
+  const cards=Object.values(ENDINGS).map(e=>{const u=unlocked.includes(e.id);
+    return `<div class="ending-card ${u?"unlocked":"locked"}" ${u?`onclick="showEndingDetail('${e.id}')"`:""}><div class="ic">${u?e.icon:"🔒"}</div><div class="t">${u?e.title:"???"}</div><div class="h">${u?"点击查看档案":"未解锁"}</div></div>`}).join("");
+  area.innerHTML=`<div class="event-box"><div class="event-tag">档案库</div><div class="event-title">结局图鉴</div><div class="endings-gallery">${cards}</div><div class="center"><button class="btn-action" onclick="showMainMenu()">返回主菜单</button></div></div>`;
+  area.scrollTop=0;
+};
+
+window.showEndingDetail=id=>{
+  const e=Object.values(ENDINGS).find(x=>x.id===id);if(!e)return;
+  area.innerHTML=`<div class="ending-screen"><div class="ending-icon">${e.icon}</div><div class="ending-title">${e.title}</div><div class="ending-desc">${e.desc}</div><button class="btn-action" onclick="showEndingsGallery()">返回图鉴</button></div>`;
+  area.scrollTop=0;
+};
+
+window.startGame=()=>{
+  panel.classList.remove("hidden");turnEl.classList.remove("hidden");
+  state={turn:1,p:CFG.init[0],c:CFG.init[1],s:CFG.init[2],i:CFG.init[3],used:[],f:{}};
+  updateStats();showCategorySelect();
+  logEl.innerText="第 1 个月开始。请选择本月的行动重点。";
+};
+
+function updateStats(){
+  [["stat1","p"],["stat2","c"],["stat3","s"],["stat4","i"]].forEach(([k,v])=>{
+    $("val-"+k).innerText=state[v];$("bar-"+k).style.width=clamp(state[v])+"%";
+  });
+  turnEl.innerText=`第 ${Math.min(state.turn,CFG.maxTurn)} 个月 / 共 ${CFG.maxTurn} 个月`;
+}
+
+function checkOver(){
+  if(state.s>=100)return"bad_scandal";
+  if(state.p<=0||state.c<=0)return"bad_collapse";
+  if(state.turn>CFG.maxTurn)return"time_up";
+  return null;
+}
+
+function showCategorySelect(){
+  const o=checkOver();if(o){triggerEnding(o);return}
+  area.innerHTML=`<div class="event-box"><div class="pick-hint">本月，你打算把精力放在哪里？</div><div class="category-container">
+<div class="category-card" onclick="selectCategory('cat1')"><div class="cat-title">医药资本与利益</div><div class="cat-desc">介入温济的核心业务与商业流向，巩固话语权</div></div>
+<div class="category-card" onclick="selectCategory('cat2')"><div class="cat-title">圈层名望与防线</div><div class="cat-desc">周旋于名媛聚会、家庭体面与潜在的舆论耳目之间</div></div>
+<div class="category-card" onclick="selectCategory('cat3')"><div class="cat-title">私域试探与暗流</div><div class="cat-desc">在无人注视的方寸之地，应对年轻继承人的步步靠近</div></div></div></div>`;
+  area.scrollTop=0;
+}
+
+function pickEvent(cat){
+  const ok=EVENTS.filter(e=>e.cat===cat&&!state.used.includes(e.id)&&e.req(state));
+  if(!ok.length)return FB[cat];
+  const fu=ok.filter(e=>e.fu);
+  if(fu.length)return rand(fu);
+  const pool=[];ok.forEach(e=>{for(let n=e.g?3:1;n>0;n--)pool.push(e)});
+  return rand(pool);
+}
+
+window.selectCategory=cat=>{
+  const ev=pickEvent(cat);
+  if(!ev.id.startsWith("fb"))state.used.push(ev.id);
+  window.cur=ev;
+  const name={cat1:"商业博弈",cat2:"社交名望",cat3:"私密隐流"}[cat];
+  const btns=ev.ch.map((c,i)=>`<button class="choice-btn" onclick="resolveTurn(${i})">${c[0]}</button>`).join("");
+  area.innerHTML=`<div class="event-box"><div class="event-tag">${name}${ev.fu?'<span class="fu">后续</span>':""}</div><div class="event-title">${ev.title}</div><div class="event-desc">${ev.desc}</div><div>${btns}</div></div>`;
+  area.scrollTop=0;
+};
+
+/* ===== 数值平衡参数（想调难度只改这里）=====
+   gain：好数值(利润/掌控/亲密)增加时的倍率   loss：好数值减少时的倍率
+   sUp / sDown：丑闻度上升 / 下降的倍率
+   softCap：好数值超过此值后，增幅再乘 softCapRate（越高越难涨）
+   sSnow：丑闻超过此值后，上升再乘 sSnowRate（越高越容易爆）
+   drift：每个月自然变化（利润被开销消耗、掌控被对手蚕食、丑闻发酵、亲密冷却）*/
+const TUNE={gain:{p:.9,c:.9,i:.9},loss:{p:1.1,c:1.1,i:1.1},sUp:1.4,sDown:.7,softCap:75,softCapRate:.7,sSnow:50,sSnowRate:1.3,drift:{p:-1,c:-1,s:2,i:-1}};
+function applyEffect(e){
+  ["p","c","s","i"].forEach((k,n)=>{
+    let d=e[n];
+    if(k==="s"){d=d>0?d*TUNE.sUp:d*TUNE.sDown;if(d>0&&state.s>=TUNE.sSnow)d*=TUNE.sSnowRate}
+    else{d=d>0?d*TUNE.gain[k]:d*TUNE.loss[k];if(d>0&&state[k]>=TUNE.softCap)d*=TUNE.softCapRate}
+    state[k]=clamp(Math.round(state[k]+d+TUNE.drift[k]));
+  });
+}
+
+window.resolveTurn=idx=>{
+  const c=window.cur.ch[idx],e=c[2];
+  applyEffect(e);
+  if(c[3])state.f[c[3]]=state.turn;
+  updateStats();
+  area.innerHTML=`<div class="result-screen"><div class="result-title">局势演变</div><div class="result-text">${c[1]}</div><div class="center"><button class="btn-action" onclick="finishTurn()">推进至下一个月</button></div></div>`;
+  area.scrollTop=0;
+  logEl.innerText=`第 ${state.turn} 个月的决断已产生影响。`;
+};
+
+window.finishTurn=()=>{state.turn++;updateStats();showCategorySelect();if(state.turn<=CFG.maxTurn)logEl.innerText=`进入第 ${state.turn} 个月。`};
+
+function triggerEnding(t){
+  let d;
+  if(t==="bad_scandal")d=ENDINGS.bad_scandal;
+  else if(t==="bad_collapse")d=ENDINGS.bad_collapse;
+  else if(state.c>=68&&state.p>=60&&state.s<=35)d=ENDINGS.co_ruler;
+  else if(state.i>=68&&state.c<55)d=ENDINGS.indulgence;
+  else if(state.c>=75&&state.i<45)d=ENDINGS.iron_lady;
+  else d=ENDINGS.equilibrium;
+  if(!unlocked.includes(d.id)){unlocked.push(d.id);saveU()}
+  area.innerHTML=`<div class="ending-screen"><div class="ending-icon">${d.icon}</div><div class="ending-title">${d.title}</div><div class="ending-desc">${d.desc}</div><button class="btn-action" onclick="startGame()">重开新局</button><button class="btn-secondary" onclick="showMainMenu()">返回主菜单</button></div>`;
+  area.scrollTop=0;
+  logEl.innerText=`局势已定：达成【${d.title}】。`;
+}
+
+loadU();showMainMenu();
+</script>
+<style>body{background:#000}</style><script>addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();parent.postMessage({type:'ai-demo-close'},location.origin);}});</script></body>
+</html>

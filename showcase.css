@@ -1,0 +1,69 @@
+:root{color-scheme:dark;--silver:#d7d8db;--quiet:#63656a}
+@property --light-strength{syntax:'<number>';inherits:false;initial-value:0}
+/* A local glyph highlight, with a masked soft bloom for already bright text. */
+.text-local-glow{color:#fffaff;text-shadow:0 0 3px rgba(255,250,255,.85),0 0 10px rgba(242,224,239,.65),0 0 20px rgba(242,224,239,.32);mask-image:radial-gradient(circle 78px at var(--light-x) var(--light-y),#000 0%,rgba(0,0,0,.9) 25%,rgba(0,0,0,.4) 58%,transparent 100%);user-select:none}
+.text-illuminated{background-image:radial-gradient(circle 86px at var(--light-x) var(--light-y),rgb(255 253 255 / var(--light-strength)) 0%,rgb(242 224 239 / calc(var(--light-strength)*.85)) 24%,rgb(242 224 239 / calc(var(--light-strength)*.3)) 57%,transparent 100%),linear-gradient(var(--text-ink),var(--text-ink));background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;transition:--light-strength .24s ease}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000}body{font-family:Arial,"Helvetica Neue","Microsoft YaHei",sans-serif;color:var(--silver);-webkit-font-smoothing:antialiased}main{position:relative;width:100%;height:100%;isolation:isolate}
+.artwork{position:absolute;inset:0;touch-action:none;cursor:grab}.artwork:active{cursor:grabbing}canvas{display:block;width:100%;height:100%}.fallback{position:absolute;left:52%;top:50%;transform:translate(-50%,-50%);width:30vw;height:47vh;object-fit:contain;pointer-events:none}.ready .fallback{display:none}
+.caption{position:absolute;left:5.5%;top:50%;transform:translateY(-50%);display:flex;align-items:flex-start;gap:4.7vw;pointer-events:none;max-width:30%}.number{font-size:clamp(11px,1.1vw,18px);font-weight:400;font-variant-numeric:tabular-nums;padding-top:.45em}.caption h1{font-size:clamp(15px,1.6vw,26px);font-weight:400;line-height:1.5;letter-spacing:0;margin:0;max-width:12em;text-wrap:balance}.subtitle{font-size:clamp(10px,.8vw,12px);line-height:1.9;font-weight:400;color:#929398;letter-spacing:.02em;margin:13px 0 0;max-width:22em;text-wrap:balance}
+nav{position:absolute;top:3.4%;right:8%;display:flex;flex-direction:column;align-items:flex-start;gap:4px;z-index:3}nav button{padding:2px 0;border:0;background:none;color:var(--quiet);font-family:inherit;font-size:clamp(11px,1vw,16px);font-weight:400;line-height:1.4;letter-spacing:-.015em;cursor:pointer;text-align:left;transition:color .25s}nav button[aria-current],nav button:hover,nav button:focus-visible{color:#e1e2e4}nav button:focus-visible{outline:1px solid #888;outline-offset:5px}::selection{background:#ddd;color:#000}.no-script{position:fixed;bottom:30px;left:30px;font-size:12px}
+@media(max-width:900px){.caption{max-width:28%;gap:2.6vw}.caption h1{font-size:16px}.number{font-size:11px}nav{right:6%;top:4%}nav button{font-size:12px}}
+@media(max-width:600px){.caption{left:7%;top:76%;gap:22px;max-width:86%}.caption h1{font-size:17px;max-width:none}.number{font-size:11px}nav{top:5%;right:7%;gap:2px}nav button{font-size:12px}.fallback{width:78vw;height:39vh;left:50%;top:48%}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Personal introduction: a quiet two-column reading space. */
+[hidden]{display:none!important}
+#caption-title{font:inherit;letter-spacing:inherit;line-height:inherit;text-align:inherit;color:inherit;background:none;border:0;padding:0;pointer-events:auto;cursor:pointer}
+#caption-title:disabled{cursor:default;opacity:1}
+.profile-back{font:inherit;background:none;border:0;padding:0;color:#a1a2a8;cursor:pointer}
+#caption-title:not(:disabled):hover,.profile-back:hover{color:#eee}
+#caption-title:focus-visible,.profile-back:focus-visible{outline:1px solid #aaa;outline-offset:5px}
+main{transition:opacity .45s ease,transform .7s cubic-bezier(.22,1,.36,1)}
+body.profile-open main{opacity:0;transform:scale(.985);pointer-events:none}
+body.chapter-open main{opacity:0;transform:scale(.985);pointer-events:none}
+.profile-page{position:fixed;inset:0;z-index:10;overflow:auto;overscroll-behavior:contain;background:#000;opacity:0;transition:opacity .45s ease;scrollbar-width:thin;scrollbar-color:#333 #000;outline:none}
+.profile-page.is-visible{opacity:1}
+.profile-header{width:min(84%,1240px);margin:0 auto;padding:40px 0 0;display:flex;justify-content:space-between;align-items:center}
+.profile-back{width:44px;height:44px;display:grid;place-items:center;margin-left:-12px}
+.profile-back svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s}
+.profile-back:hover svg{transform:translateX(-3px)}
+.profile-header h2{font-size:12px;font-weight:400;letter-spacing:.08em;color:#a1a2a8;margin:0}
+.profile-header h2 span{margin-right:24px;font-size:10px;color:#666}
+.profile-layout{width:min(84%,1240px);margin:clamp(64px,10vh,120px) auto 0;padding-bottom:100px;display:grid;grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);column-gap:clamp(64px,8.5vw,150px);align-items:start}
+.profile-portrait{position:sticky;top:110px;margin:8px 0 0;align-self:start}
+.profile-portrait img{display:block;width:100%;height:auto;aspect-ratio:1122/1402;object-fit:contain}
+.profile-portrait figcaption{font-size:12px;letter-spacing:.16em;color:#9a9b9f;margin-top:23px}
+.profile-roles{font-size:clamp(11px,.93vw,14px);font-weight:400;line-height:1.8;letter-spacing:.035em;color:#bcbec4;margin:0 0 30px;text-wrap:balance}
+.profile-copy blockquote{font-family:"Songti SC","SimSun",serif;font-size:clamp(20px,1.9vw,29px);font-weight:400;line-height:1.65;letter-spacing:.025em;color:#d7d8db;margin:0 0 48px;text-wrap:pretty}
+.profile-capabilities{display:grid;gap:30px}
+.profile-capabilities h3{font-size:14px;line-height:1.6;font-weight:600;letter-spacing:.035em;color:#e0e1e5;margin:0 0 10px}
+.profile-capabilities p{font-size:14px;line-height:1.95;font-weight:400;color:#9c9ea5;margin:0;text-wrap:pretty;overflow-wrap:anywhere}
+.portrait-flight{position:fixed;z-index:20;object-fit:contain;pointer-events:none;transform-origin:top left;will-change:transform}
+@media(min-width:1500px){.profile-capabilities p{font-size:15px}.profile-capabilities{gap:35px}}
+@media(max-width:1000px){.profile-header,.profile-layout{width:86%}.profile-layout{grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);gap:7vw;margin-top:68px}.profile-portrait{top:70px}.profile-copy blockquote{margin-bottom:35px}.profile-roles{margin-bottom:22px}}
+@media(max-width:600px){.profile-header{padding-top:24px}.profile-header h2 span{margin-right:12px}.profile-layout{grid-template-columns:1fr;gap:40px;margin-top:42px;padding-bottom:65px}.profile-portrait{position:static;width:64%;margin:0}.profile-portrait figcaption{margin-top:15px}.profile-roles{font-size:11px}.profile-copy blockquote{font-size:23px;margin-bottom:34px}.profile-capabilities{gap:28px}.profile-capabilities p{font-size:14px;line-height:1.95}}
+
+/* A sparse chapter opening; the cover's own pixels assemble its four outcomes. */
+.characters-page{position:fixed;inset:0;z-index:11;background:#000;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#333 #000;outline:none}
+#chapter-scene{position:fixed;inset:0;z-index:3;pointer-events:none}
+.chapter-header{position:relative;z-index:4}
+.chapter-body{width:min(84%,1240px);margin:clamp(80px,14vh,145px) auto 0;padding-bottom:110px}
+.chapter-introduction{display:grid;grid-template-columns:.85fr 1.15fr;gap:9%;align-items:center}
+.chapter-platform>span{font-size:10px;letter-spacing:.25em;color:#787b83}
+.chapter-platform>p{font-family:Georgia,"Times New Roman",serif;font-size:clamp(76px,9.6vw,138px);font-weight:400;line-height:1.1;letter-spacing:-.065em;margin:8px 0 0;color:#dddfe5}
+.platform-dot{color:#8c8490}
+.chapter-explanation>p{font-size:clamp(14px,1.2vw,18px);font-weight:400;line-height:1.95;color:#b6b8bf;margin:0;text-wrap:pretty}
+.chapter-explanation .chapter-work{font-size:11px;color:#797c84;line-height:2;letter-spacing:.025em;margin-top:24px}
+.chapter-results{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:4%;margin:clamp(70px,13vh,145px) 0 0}
+.chapter-result{display:flex;flex-direction:column;align-items:flex-start;position:relative;min-width:0;padding-bottom:24px}
+.chapter-result:nth-child(even){margin-top:45px}
+.chapter-result::after{content:"";height:1px;width:34px;background:#41424a;position:absolute;bottom:0;left:0}
+.chapter-value{order:-1;font-family:Georgia,"Times New Roman",serif;font-size:clamp(55px,6.7vw,98px);font-weight:400;line-height:1;letter-spacing:-.055em;margin:0 0 20px;color:#dedfe4;white-space:nowrap}
+.value-unit{font-size:.35em;letter-spacing:0;margin-left:7px}
+.chapter-value.word-value{font-family:"Songti SC","SimSun",serif;font-size:clamp(23px,3vw,44px);letter-spacing:.035em;line-height:1.3;min-height:clamp(55px,6.7vw,98px);display:flex;align-items:center}
+.value-divider{font-family:Georgia,serif;font-size:.6em;color:#6f7078;margin:0 8px;font-weight:400}
+.chapter-result dt{font-size:12px;color:#858891;line-height:1.8;letter-spacing:.025em}
+.characters-page.is-opening .chapter-platform,.characters-page.is-opening .chapter-explanation,.characters-page.is-opening .chapter-result{opacity:0}
+@media(max-width:600px){.chapter-body{width:86%;margin-top:65px;padding-bottom:70px}.chapter-introduction{grid-template-columns:1fr;gap:26px}.chapter-platform>p{font-size:88px}.chapter-explanation>p{font-size:14px}.chapter-explanation .chapter-work{margin-top:15px;font-size:10px}.chapter-results{grid-template-columns:repeat(2,minmax(0,1fr));gap:38px 25px;margin-top:55px}.chapter-result:nth-child(even){margin-top:25px}.chapter-value{font-size:65px;margin-bottom:15px}.chapter-value.word-value{font-size:28px;min-height:65px}.chapter-result dt{font-size:11px}}
+
+body.section-returning>main{visibility:visible!important;opacity:1!important;transform:none!important;pointer-events:none}body.section-returning .characters-page,body.section-returning .writing-shell,body.section-returning .ai-shell{pointer-events:none}

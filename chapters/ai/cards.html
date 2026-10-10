@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Game: Old Maid with Ren</title>
+    <style>
+        700&family=Noto+Serif+JP:wght@300;500;700&display=swap');
+
+        :root {
+          --bg-color: #0a0a0a;
+          --text-color: #e0e0e0;
+          --accent-color: #ffffff;
+          --dim-color: #666;
+          --border-color: #333;
+          --ren-blue: #1e3a8a; /* 桐生莲应援色 */
+        }
+
+        body {
+          margin: 0;
+          padding: 0;
+          background-color: #000;
+          font-family: 'Noto Serif JP', 'Times New Roman', serif;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          overflow: hidden;
+          color: var(--text-color);
+          user-select: none;
+        }
+
+        #game-container {
+          width: 100%;
+          max-width: 450px;
+          height: 600px;
+          background: linear-gradient(180deg, #0f0f0f 0%, #050505 100%);
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          border: 1px solid var(--border-color);
+          box-shadow: 0 0 30px rgba(30, 58, 138, 0.1);
+          overflow: hidden;
+        }
+
+        /* Ren's Area */
+        #ren-area {
+          flex: 1.2;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding-top: 30px;
+          position: relative;
+          z-index: 2;
+        }
+
+        #ren-avatar {
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          background-image: url('https://pic1.imgdb.cn/item/693138c21f1698c4ff0a864a.jpg');
+          background-size: cover;
+          background-position: center top;
+          border: 2px solid var(--dim-color);
+          margin-bottom: 15px;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+          transition: all 0.5s ease;
+        }
+        
+        #ren-avatar.speaking {
+          border-color: var(--ren-blue);
+          box-shadow: 0 0 15px var(--ren-blue);
+          transform: scale(1.05);
+        }
+
+        .bubble {
+          background: rgba(255, 255, 255, 0.95);
+          color: #1a1a1a;
+          padding: 12px 16px;
+          border-radius: 8px;
+          font-size: 13px;
+          max-width: 85%;
+          text-align: center;
+          position: relative;
+          opacity: 0;
+          transform: translateY(10px);
+          transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          margin-bottom: 20px;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+          line-height: 1.6;
+          font-weight: 500;
+        }
+
+        .bubble::after {
+          content: '';
+          position: absolute;
+          bottom: -8px;
+          left: 50%;
+          transform: translateX(-50%);
+          border-width: 8px 8px 0;
+          border-style: solid;
+          border-color: rgba(255, 255, 255, 0.95) transparent transparent transparent;
+        }
+
+        .bubble.visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        /* Card Styles */
+        .hand-area {
+          display: flex;
+          justify-content: center;
+          gap: -10px; /* Overlap cards */
+          padding: 10px;
+          min-height: 90px;
+          perspective: 1000px;
+          width: 100%;
+        }
+
+        .card {
+          width: 50px;
+          height: 75px;
+          background-color: #fff;
+          border-radius: 6px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-family: 'Cinzel', serif;
+          font-weight: bold;
+          font-size: 18px;
+          color: #000;
+          cursor: pointer;
+          box-shadow: -2px 2px 8px rgba(0,0,0,0.4);
+          transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), margin-top 0.3s;
+          position: relative;
+          border: 1px solid #ccc;
+          margin: 0 2px;
+        }
+
+        .card.ren-card {
+          background: repeating-linear-gradient(
+          135deg,
+          #111,
+          #111 10px,
+          #1a1a1a 10px,
+          #1a1a1a 20px
+          );
+          color: transparent;
+          border: 1px solid #333;
+        }
+        
+        .card.ren-card::before {
+          content: 'R';
+          color: rgba(255,255,255,0.1);
+          font-size: 24px;
+          position: absolute;
+        }
+        
+        .card.ren-card:hover {
+          transform: translateY(-5px);
+        }
+        
+        .card.ren-card.selected {
+          transform: translateY(-20px) scale(1.1);
+          border-color: var(--ren-blue);
+          box-shadow: 0 0 15px rgba(30, 58, 138, 0.6);
+          z-index: 10;
+        }
+
+        .card.joker {
+          color: #8b0000;
+          font-size: 14px;
+        }
+
+        /* Interaction Bar */
+        #interaction-area {
+          height: 70px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-top: 1px solid rgba(255,255,255,0.1);
+          border-bottom: 1px solid rgba(255,255,255,0.1);
+          background: rgba(0,0,0,0.3);
+          backdrop-filter: blur(5px);
+        }
+
+        .btn {
+          background: transparent;
+          border: 1px solid var(--dim-color);
+          color: #ccc;
+          padding: 8px 24px;
+          margin: 0 12px;
+          font-family: 'Noto Serif JP', serif;
+          font-size: 12px;
+          cursor: pointer;
+          transition: all 0.3s;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          border-radius: 2px;
+        }
+
+        .btn:hover:not(:disabled) {
+          border-color: #fff;
+          color: #fff;
+          background: rgba(255,255,255,0.1);
+          box-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+        
+        .btn:disabled {
+          opacity: 0.3;
+          cursor: not-allowed;
+          border-color: #333;
+        }
+
+        /* User Area */
+        #user-area {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          padding-bottom: 30px;
+          background: linear-gradient(to top, rgba(20,20,20,0.8), transparent);
+        }
+        
+        /* Overlays */
+        #user-dialogue-overlay {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 200px;
+          background: rgba(0,0,0,0.95);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          z-index: 20;
+          transform: translateY(100%);
+          transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+          border-top: 1px solid var(--ren-blue);
+        }
+        
+        #user-dialogue-overlay.active {
+          transform: translateY(0);
+        }
+
+        .choice-btn {
+          width: 85%;
+          padding: 12px;
+          margin: 6px 0;
+          background: rgba(255,255,255,0.05);
+          border: 1px solid var(--dim-color);
+          color: #eee;
+          text-align: center;
+          font-size: 13px;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        
+        .choice-btn:hover {
+          background: #fff;
+          color: #000;
+          transform: scale(1.02);
+        }
+
+        .status-text {
+          font-size: 11px;
+          color: var(--dim-color);
+          text-align: center;
+          margin-top: 10px;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+        }
+        
+        /* Result Modal */
+        #result-modal {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0,0,0,0.95);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          z-index: 50;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.8s;
+        }
+        
+        #result-modal.active {
+          opacity: 1;
+          pointer-events: all;
+        }
+        
+        #result-title {
+          font-size: 24px;
+          font-family: 'Cinzel', serif;
+          margin-bottom: 15px;
+          color: var(--ren-blue);
+        }
+        
+        #result-text {
+          font-size: 16px;
+          margin-bottom: 30px;
+          text-align: center;
+          line-height: 1.8;
+          padding: 0 40px;
+          color: #ddd;
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <!-- Ren's Section -->
+    <div id="ren-area">
+        <div class="bubble" id="ren-bubble">...</div>
+        <div id="ren-avatar"></div>
+        <div class="hand-area" id="ren-hand">
+          <!-- Cards injected by JS -->
+        </div>
+    </div>
+
+    <!-- Interaction Bar -->
+    <div id="interaction-area">
+        <button class="btn" id="btn-check" onclick="triggerIdleDialogue()">Interact</button>
+        <button class="btn" id="btn-affirm" disabled onclick="confirmRenSelection()">Confirm</button>
+    </div>
+
+    <!-- User's Section -->
+    <div id="user-area">
+        <div class="status-text" id="game-status">PLAYER TURN</div>
+        <div class="hand-area" id="user-hand">
+          <!-- Cards injected by JS -->
+        </div>
+    </div>
+    
+    <!-- User Dialogue Choice Overlay -->
+    <div id="user-dialogue-overlay">
+        <div style="color: #888; font-size: 12px; margin-bottom: 15px; font-style:italic;">桐生莲的手指正在你的牌背上游移...</div>
+        <button class="choice-btn" onclick="userTalk('mislead')">【干扰】视线飘向那张鬼牌，假装紧张</button>
+        <button class="choice-btn" onclick="userTalk('help')">【暗示】眼神示意安全牌，试图"帮"他</button>
+        <button class="choice-btn" onclick="userTalk('silent')">【沉默】咬住嘴唇，强装镇定</button>
+    </div>
+
+    <!-- Result Modal -->
+    <div id="result-modal">
+        <div id="result-title">GAME OVER</div>
+        <div id="result-text"></div>
+        <button class="btn" onclick="initGame()">REMATCH</button>
+    </div>
+</div>
+
+<script>
+    // --- DIALOGUE DATABASE (EXPANDED) ---
+    
+    const DB = {
+        // 游戏开场
+        START: [
+          "牌发好了。不想输得太惨的话，就认真点哦，宝宝。",
+          "规则很简单：输的人要接受惩罚。至于惩罚内容...我已经想好了。",
+          "这次可别哭着求饶了。来吧，让我看看你的本事。",
+          "只有我们两个人的游戏...呵，真是让人期待。",
+          "别发抖，牌都拿不稳了吗？还是说...你在期待输给我？"
+        ],
+        
+        // 闲置/互动 (User turn, idle)
+        IDLE: [
+          "这么看着我，是想要牌，还是想要别的？",
+          "别紧张，宝宝，只是一场游戏而已...虽然赌注有点大。",
+          "你的心跳声，我在这里都能听见。",
+          "想从我脸上看出点什么？遗憾，我是专业的偶像和演员。",
+          "在这个房间里，规则由我来定。不过你可以试着反抗一下。",
+          "这么看着我是想让我放水吗？也不是不行，求我。",
+          "这张脸好看吗？好看就多看一会儿，毕竟待会你大概会哭着闭上眼。",
+          "乖孩子，专心一点。被我玩着的时候走神可不好。",
+          "怎么？觉得我是那种会故意把鬼牌递给你的人吗？虽然...也不是不可能。",
+          "现在的表情真可爱，好像一只掉进陷阱的小白兔。",
+          "如果不知道选哪张，就把手伸过来，我教你。"
+        ],
+        
+        // 玩家选中某张牌时的反应 (Touch Reaction)
+        TOUCH: [
+          "确定是这张？我的心跳好像变快了呢。",
+          "嗯？直觉很准嘛...或者只是运气？",
+          "那张可是危险品哦，要是拿到鬼牌，我就要把你吃掉了。",
+          "乖孩子，选那张的话，我会很开心的。",
+          "你要拿走我最喜欢的一张吗？真残忍啊。",
+          "手别缩回去，选定离手，宝宝。",
+          "碰到了你的手指很凉啊，要我帮你暖暖吗？",
+          "选这张？真的？那我就当你是在向我求救了。",
+          "我不介意你拿走那张，毕竟——你拿走什么我都愿意给。",
+          "啧，这张牌可是带着我的体温的。",
+          "哈...被你选中了啊。真没办法。",
+          "别用那种眼神看我，选错了也不会怪你的，只会加倍惩罚你而已。"
+        ],
+        
+        // 玩家抽走【鬼牌】 (User takes Joker)
+        USER_TOOK_JOKER: [
+          "哎呀，把鬼牌拿走了？真听话。",
+          "噗...哈哈哈，你真的很擅长取悦我呢，宝宝。",
+          "这就是所谓的‘自投罗网’吧？把那张鬼牌抱紧点，那是你的项圈。",
+          "看来你真的很想输给我啊...那我怎么能辜负你的期待呢？",
+          "乖孩子，帮我处理掉了最麻烦的东西。作为奖励，待会儿让你先舒服。",
+          "虽然我很想说是运气不好，但看你的表情，怎么感觉你是故意的？"
+        ],
+        
+        // 玩家抽走【安全牌】 (User takes Safe Card)
+        USER_TOOK_SAFE: [
+          "啧，被你拿走了好牌呢。",
+          "运气不错嘛...不过，运气总有用完的时候。",
+          "把我的防线拆掉了一块啊。做得好。",
+          "居然避开了陷阱？稍微有点不甘心呢。",
+          "呵，别得意。游戏还没结束，猎物还在笼子里。"
+        ],
+        
+        // 莲的回合：思考 (Ren Thinking)
+        REN_THINK: [
+          "让我看看哪张牌藏着你想对我说的话？",
+          "你的眼神在往左边飘哦，是在暗示我吗？还是陷阱？",
+          "这张牌看起来很孤单啊，就像现在的你一样。",
+          "我要抽了哦。如果抽到鬼牌，是不是说明我们在某种意义上‘心意相通’？",
+          "别抖，我会很轻的...把牌拿稳了，宝宝。",
+          "看着我的眼睛。告诉我，哪张是安全的？",
+          "你的演技太拙劣了，宝宝。但我很喜欢看你努力骗我的样子。"
+        ],
+        
+        // 莲的回合：识破谎言/看穿玩家 (Ren detects lie/reads player)
+        REN_READ_PLAYER: [
+          "想骗我？你的眼神早就出卖你了，宝宝。",
+          "这种小把戏对我没用。我可是看透了你的一切。",
+          "你的呼吸乱了。是因为在撒谎，还是因为我靠得太近？",
+          "既然你这么拼命想掩饰那张牌...那我偏要选另一张。",
+          "我听到了哦，你心里的声音在说‘别选这张’。"
+        ],
+        
+        // 莲的回合：信任/顺从玩家 (Ren trusts/plays along)
+        REN_TRUST: [
+          "既然你这么说，那我就信你一次。",
+          "好啊，听你的。如果输了，就要你负责哦？",
+          "看在你求救的眼神这么可爱的份上，我就选这张吧。",
+          "真拿你没办法...我就配合你演这场戏吧。"
+        ],
+        
+        // 莲抽到【鬼牌】 (Ren gets Joker)
+        REN_GOT_JOKER: [
+          "哈...居然把这个给我了？胆子不小。",
+          "这就是你的‘爱意’吗？沉甸甸的鬼牌啊。",
+          "看来你想让我输呢。真是坏孩子，不过我不讨厌。",
+          "啧，被摆了一道。今晚要好好‘教育’你一下了。",
+          "居然敢算计主人...看来普通的惩罚已经不够了。",
+          "有趣。想看我输掉的样子？那就如你所愿。"
+        ],
+        
+        // 莲抽到【安全牌】并凑成对子 (Ren gets Safe/Pair)
+        REN_GOT_SAFE: [
+          "我就知道是这张。我和你之间，不需要运气。",
+          "你看，只要看着你的眼睛，我就知道答案。",
+          "凑成一对了。就像我们一样，很般配吧？",
+          "看来你的小把戏对我没用呢，乖孩子。",
+          "真乖，把好牌都送给我了。是在讨好我吗？"
+        ],
+        
+        // 游戏结束：玩家赢 (Ren Lose)
+        GAME_OVER_REN_LOSE: [
+          "呵...居然输给你了？真是稀奇。",
+          "不错嘛，学会骗人了？这就是你给主人的惊喜？",
+          "赢了想要什么奖励？如果是想要我吻你的话...现在就可以满足你。",
+          "真是败给你了。看来今晚我是你的战利品了，随便你处置...如何？",
+          "居然能赢过我...你的演技进步了啊，宝宝。我都快分不清你是真心的还是在演戏了。",
+          "输了啊...那作为惩罚，今晚我就把自己送给你吧。不想收？那可由不得你。",
+          "好吧，你赢了。不过别得意太早，夜还长着呢，我们换个游戏继续玩？"
+        ],
+        
+        // 游戏结束：莲赢 (Ren Win)
+        GAME_OVER_REN_WIN: [
+          "看来是我赢了呢。按照约定...该接受惩罚了，把腿张开点，宝宝。",
+          "这就结束了？真没劲。不过看在你输掉的样子很可爱的份上，我会温柔一点的。",
+          "所有权归我了。今晚，你没有任何拒绝的权利。",
+          "乖乖认输吧。现在，你是我的了，从头到脚。",
+          "真是遗憾，看来今晚的主导权在我手里。过来，坐到我腿上。",
+          "愿赌服输。先把衣服脱了吧...开玩笑的，别哭啊。但我确实要收点利息。",
+          "输了的小狗要听主人的话。第一件事，吻我。",
+          "结局早就注定了。你逃不掉的，宝宝。"
+        ]
+    };
+
+    // --- GAME LOGIC ---
+
+    const SUITS = ['♠', '♥', '♣', '♦'];
+    const RANKS = ['A', 'J', 'Q', 'K', '10']; // Short deck for quicker gameplay
+    let deck = [];
+    let renHand = [];
+    let userHand = [];
+    let turn = 'user'; 
+    let selectedRenCardIndex = -1;
+    let gameActive = true;
+
+    // Helper: Random Array Picker
+    function pickRandom(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    // Initialization
+    function initGame() {
+        deck = createDeck();
+        shuffle(deck);
+        deal();
+        removePairs(renHand);
+        removePairs(userHand);
+        
+        turn = 'user';
+        gameActive = true;
+        selectedRenCardIndex = -1;
+        
+        // UI Reset
+        document.getElementById('result-modal').classList.remove('active');
+        document.getElementById('btn-affirm').disabled = true;
+        document.getElementById('btn-check').disabled = false;
+        document.getElementById('ren-avatar').classList.remove('speaking');
+        
+        // Initial Dialogue
+        setBubble(pickRandom(DB.START));
+        updateDisplay();
+        
+        // Check immediate win (rare but possible)
+        checkWinCondition();
+    }
+
+    function createDeck() {
+        let d = [];
+        // Create pairs
+        for(let r of RANKS) {
+          d.push({suit: '♠', rank: r, isJoker: false});
+          d.push({suit: '♥', rank: r, isJoker: false});
+          d.push({suit: '♣', rank: r, isJoker: false});
+          d.push({suit: '♦', rank: r, isJoker: false});
+        }
+        // Add Joker
+        d.push({suit: '', rank: 'JOKER', isJoker: true}); 
+        return d;
+    }
+
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function deal() {
+        renHand = [];
+        userHand = [];
+        for(let i=0; i<deck.length; i++) {
+          if(i % 2 === 0) userHand.push(deck[i]);
+          else renHand.push(deck[i]);
+        }
+    }
+
+    function removePairs(hand) {
+        const counts = {};
+        hand.forEach(c => {
+          if(c.isJoker) return;
+          counts[c.rank] = (counts[c.rank] || 0) + 1;
+        });
+        
+        for (let rank in counts) {
+          while (counts[rank] >= 2) {
+          const idx1 = hand.findIndex(c => c.rank === rank && !c.isJoker);
+          hand.splice(idx1, 1);
+          const idx2 = hand.findIndex(c => c.rank === rank && !c.isJoker);
+          hand.splice(idx2, 1);
+          counts[rank] -= 2;
+          }
+        }
+    }
+
+    // UI Updates
+    function updateDisplay() {
+        const renContainer = document.getElementById('ren-hand');
+        const userContainer = document.getElementById('user-hand');
+        
+        // Ren Hand
+        renContainer.innerHTML = '';
+        renHand.forEach((card, index) => {
+          const cardDiv = document.createElement('div');
+          cardDiv.className = `card ren-card ${index === selectedRenCardIndex ? 'selected' : ''}`;
+          cardDiv.onclick = () => onRenCardClick(index);
+          renContainer.appendChild(cardDiv);
+        });
+
+        // User Hand
+        userContainer.innerHTML = '';
+        userHand.forEach(card => {
+          const cardDiv = document.createElement('div');
+          cardDiv.className = `card ${card.isJoker ? 'joker' : ''}`;
+          cardDiv.innerText = card.isJoker ? 'JOKER' : card.rank;
+          if(!card.isJoker) {
+          if(card.suit === '♥' || card.suit === '♦') cardDiv.style.color = '#8b0000';
+          }
+          userContainer.appendChild(cardDiv);
+        });
+
+        const status = document.getElementById('game-status');
+        if(turn === 'user') {
+          status.innerText = "你的回合：点击桐生莲的牌进行抽取";
+          status.style.color = "#fff";
+        } else {
+          status.innerText = "对方回合：桐生莲正在观察你...";
+          status.style.color = "#888";
+        }
+    }
+
+    function setBubble(text) {
+        const b = document.getElementById('ren-bubble');
+        const avatar = document.getElementById('ren-avatar');
+        
+        b.classList.remove('visible');
+        
+        setTimeout(() => {
+          b.innerText = text;
+          b.classList.add('visible');
+          avatar.classList.add('speaking');
+          
+          // Remove speaking animation after a while
+          setTimeout(() => {
+          avatar.classList.remove('speaking');
+          }, 2000);
+        }, 200); // Small delay for fade effect
+    }
+
+    function triggerIdleDialogue() {
+        if(!gameActive) return;
+        setBubble(pickRandom(DB.IDLE));
+    }
+
+    // --- USER ACTION PHASE ---
+
+    function onRenCardClick(index) {
+        if(turn !== 'user' || !gameActive) return;
+        
+        selectedRenCardIndex = index;
+        updateDisplay();
+        
+        setBubble(pickRandom(DB.TOUCH));
+        document.getElementById('btn-affirm').disabled = false;
+    }
+
+    function confirmRenSelection() {
+        if(selectedRenCardIndex === -1) return;
+        
+        const card = renHand.splice(selectedRenCardIndex, 1)[0];
+        userHand.push(card);
+        removePairs(userHand);
+        
+        // Dialogue based on card result
+        if (card.isJoker) {
+          setBubble(pickRandom(DB.USER_TOOK_JOKER));
+        } else {
+          setBubble(pickRandom(DB.USER_TOOK_SAFE));
+        }
+        
+        selectedRenCardIndex = -1;
+        document.getElementById('btn-affirm').disabled = true;
+        document.getElementById('btn-check').disabled = true;
+        updateDisplay();
+        
+        if(checkWinCondition()) return;
+
+        // Switch to Ren
+        turn = 'ren';
+        setTimeout(startRenTurn, 1500);
+    }
+
+    // --- REN ACTION PHASE ---
+
+    function startRenTurn() {
+        if(!gameActive) return;
+        updateDisplay();
+        
+        // 1. Thinking phase
+        setBubble(pickRandom(DB.REN_THINK));
+        
+        // 2. Present options to user
+        setTimeout(() => {
+          document.getElementById('user-dialogue-overlay').classList.add('active');
+        }, 2000);
+    }
+
+    function userTalk(actionType) {
+        // User makes a choice/reaction
+        document.getElementById('user-dialogue-overlay').classList.remove('active');
+        
+        // Delay to simulate reaction
+        setTimeout(() => {
+          renReactAndDraw(actionType);
+        }, 800);
+    }
+
+    function renReactAndDraw(actionType) {
+        const jokerIdx = userHand.findIndex(c => c.isJoker);
+        let pickIndex = -1;
+        
+        // AI LOGIC
+        // Ren is smart (NPD/Observant). He usually avoids traps.
+        // But sometimes he plays along or makes mistakes for drama.
+        
+        const safeIndices = userHand.map((c, i) => i).filter(i => i !== jokerIdx);
+        let dialogueType = 'NEUTRAL'; // NEUTRAL, READ, TRUST
+        
+        if (jokerIdx !== -1) {
+          // Player has Joker
+          
+          if (actionType === 'mislead') {
+          // User tries to act like Joker is safe or vice versa
+          // Ren sees through it 70% of the time
+          if (Math.random() > 0.3) {
+          pickIndex = safeIndices[Math.floor(Math.random() * safeIndices.length)];
+          dialogueType = 'READ';
+          } else {
+          pickIndex = jokerIdx; // He fell for it (or played along)
+          dialogueType = 'TRUST';
+          }
+          } else if (actionType === 'help') {
+          // User tries to help him
+          // Ren trusts 60% of time
+          if (Math.random() > 0.4) {
+          pickIndex = safeIndices[Math.floor(Math.random() * safeIndices.length)];
+          dialogueType = 'TRUST';
+          } else {
+          pickIndex = jokerIdx; // Suspicious, so he picked the wrong one
+          dialogueType = 'READ'; 
+          }
+          } else {
+          // Silent
+          pickIndex = (Math.random() > 0.5 && safeIndices.length > 0) ? 
+          safeIndices[Math.floor(Math.random() * safeIndices.length)] : 
+          Math.floor(Math.random() * userHand.length);
+          dialogueType = 'NEUTRAL';
+          }
+        } else {
+          // Player has no Joker (Safe draw)
+          pickIndex = Math.floor(Math.random() * userHand.length);
+          dialogueType = 'NEUTRAL';
+        }
+        
+        // Speak BEFORE drawing (Reaction to user's behavior)
+        if (dialogueType === 'READ') {
+          setBubble(pickRandom(DB.REN_READ_PLAYER));
+        } else if (dialogueType === 'TRUST') {
+          setBubble(pickRandom(DB.REN_TRUST));
+        }
+        // If neutral, he might say nothing or generic thinking line (already said)
+
+        // Execute Draw after short delay
+        setTimeout(() => {
+          const card = userHand.splice(pickIndex, 1)[0];
+          renHand.push(card);
+          
+          // Speak AFTER drawing (Result reaction)
+          setTimeout(() => {
+          if(card.isJoker) {
+          setBubble(pickRandom(DB.REN_GOT_JOKER));
+          } else {
+          // Check for pairs
+          const count = renHand.filter(c => c.rank === card.rank).length;
+          if(count >= 2) {
+          setBubble(pickRandom(DB.REN_GOT_SAFE));
+          }
+          }
+          
+          removePairs(renHand);
+          turn = 'user';
+          document.getElementById('btn-check').disabled = false;
+          updateDisplay();
+          checkWinCondition();
+          }, 1000);
+          
+        }, 1500);
+    }
+
+    // --- WIN/LOSE ---
+
+    function checkWinCondition() {
+        if(userHand.length === 0) {
+          endGame('user');
+          return true;
+        }
+        if(renHand.length === 0) {
+          endGame('ren');
+          return true;
+        }
+        return false;
+    }
+
+    function endGame(winner) {
+        gameActive = false;
+        const modal = document.getElementById('result-modal');
+        const textDiv = document.getElementById('result-text');
+        const titleDiv = document.getElementById('result-title');
+        
+        setTimeout(() => {
+          modal.classList.add('active');
+          if(winner === 'user') {
+          // User Wins = Ren Loses
+          titleDiv.innerText = "YOU WIN";
+          titleDiv.style.color = "#fff";
+          textDiv.innerText = pickRandom(DB.GAME_OVER_REN_LOSE);
+          setBubble("......输了啊。");
+          } else {
+          // Ren Wins = User Loses
+          titleDiv.innerText = "REN WINS";
+          titleDiv.style.color = "#8b0000"; // Blood red
+          textDiv.innerText = pickRandom(DB.GAME_OVER_REN_WIN);
+          setBubble("意料之中。");
+          }
+        }, 1500);
+    }
+
+    // Start
+    initGame();
+</script>
+
+<style>body{margin:0;background:#000}#game-container{height:min(600px,calc(100dvh - 16px));max-width:min(450px,calc(100vw - 16px))}</style><script>addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();parent.postMessage({type:'ai-demo-close'},location.origin);}});</script></body>
+</html>

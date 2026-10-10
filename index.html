@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="翁蕾的作品集：个人简介、角色创作与社区增长、内容策划与写作、AI 视觉与互动。">
+  <title>翁蕾 · Portfolio</title>
+  <link rel="stylesheet" href="showcase.css?v=16">
+  <link rel="preload" as="image" href="assets/about.jpg">
+  <link rel="stylesheet" href="evidence.css?v=3">
+  <link rel="stylesheet" href="chapter-pages.css?v=4">
+  <link rel="stylesheet" href="writing-pages.css?v=3">
+  <link rel="stylesheet" href="ai-pages.css?v=2">
+</head>
+<body>
+  <main aria-label="作品集，滚动或拖动切换栏目">
+    <div class="artwork" id="artwork">
+      <img class="fallback" src="assets/about.jpg" alt="翁蕾的个人照片">
+      <canvas id="scene" aria-hidden="true"></canvas>
+    </div>
+    <div class="caption" aria-live="polite" aria-atomic="true"><span class="number">01</span><div><h1><button id="caption-title" type="button">个人简介</button></h1><p class="subtitle">内容创作、用户理解与 AI 实践</p></div></div>
+    <nav aria-label="作品分类">
+      <button data-index="0" aria-current="true">About Me</button>
+      <button data-index="1">Characters &amp; Community</button>
+      <button data-index="2">Writing</button>
+      <button data-index="3">AI Visuals &amp; Interaction</button>
+    </nav>
+  </main>
+  <section class="profile-page" id="profile" aria-labelledby="profile-title" tabindex="-1" hidden>
+    <header class="profile-header">
+      <button class="profile-back" id="close-profile" aria-label="返回目录"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H4m6-6-6 6 6 6"/></svg></button>
+      <h2 id="profile-title"><span>01</span> 个人简介</h2>
+    </header>
+    <div class="profile-layout">
+      <figure class="profile-portrait">
+        <img id="profile-photo" src="assets/about.jpg" alt="翁蕾的彩色人像" width="1122" height="1402">
+        <figcaption>翁蕾</figcaption>
+      </figure>
+      <article class="profile-copy">
+        <p class="profile-roles">内容操盘手 / 互动叙事主创 / AI Native Creator</p>
+        <blockquote>“比我会讲故事的，没我会做流量；比我会做流量的，没我更懂AI。”</blockquote>
+        <div class="profile-capabilities">
+          <section>
+            <h3>内容嗅觉与流量操盘</h3>
+            <p>精准捕捉年轻/女性向圈层的情绪痛点，以内容本身的吸引力撬动自然流裂变，跑出上线 7 天破百万互动的爆款角色，长期占据圈内话题榜前列，擅长借势社区讨论节奏放大内容声量；</p>
+          </section>
+          <section>
+            <h3>互动叙事与文本拆解</h3>
+            <p>具备敏锐的市场情绪嗅觉与扎实的文本结构化能力。擅长抓取受众核心情感诉求，设计自带戏剧冲突的人物设定、关系矛盾与剧情伏笔；善于通过开场强钩子与情境留白激发用户的主动交互欲，支撑起千轮乃至万轮的深度对话互动。</p>
+          </section>
+          <section>
+            <h3>AI生产力与产品化落地</h3>
+            <p>融合LLM提示词工程、AIGC视觉生成与轻量前端开发（Vibe Coding/HTML交互组件），能把创作想法直接交付为具备可玩性与商业潜力的AI原生产品体验。</p>
+          </section>
+        </div>
+      </article>
+    </div>
+  </section>
+  <section class="characters-page" id="characters-intro" aria-labelledby="characters-title" tabindex="-1" hidden>
+    <canvas id="chapter-scene" aria-hidden="true"></canvas>
+    <header class="profile-header chapter-header">
+      <button class="profile-back" id="close-characters" aria-label="返回目录"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H4m6-6-6 6 6 6"/></svg></button>
+      <h2 id="characters-title"><span>02</span> 角色创作与社区增长</h2>
+    </header>
+    <div class="chapter-body">
+      <div class="chapter-introduction">
+        <div class="chapter-platform"><span>AI ROLEPLAY</span><p>Mufy<span class="platform-dot">.</span></p></div>
+        <div class="chapter-explanation">
+          <p>在女性向 AI 角色扮演平台 Mufy，创作可与用户持续对话的虚拟角色，并围绕角色内容运营创作者账号。</p>
+          <p class="chapter-work">角色设定 / 对话设计 / 内容制作 / 社区运营</p>
+        </div>
+      </div>
+      <dl class="chapter-results">
+        <div class="chapter-result"><dt>创作者账号粉丝</dt><dd class="chapter-value">2.5<span class="value-unit">W</span></dd></div>
+        <div class="chapter-result"><dt>百万级对话量角色</dt><dd class="chapter-value">04</dd></div>
+        <div class="chapter-result"><dt>长对话 · 持续互动</dt><dd class="chapter-value word-value">千轮<span class="value-divider"> / </span>万轮</dd></div>
+        <div class="chapter-result"><dt>角色衍生创作</dt><dd class="chapter-value word-value">二创</dd></div>
+      </dl>
+    </div>
+  </section>
+  <noscript><p class="no-script">开启 JavaScript 后可切换四个作品栏目。</p></noscript>
+  <script src="evidence.js?v=4" defer></script>
+  <script src="chapter.js?v=5" defer></script>
+  <script src="chapter-pages.js?v=6" defer></script>
+  <script src="writing-pages.js?v=4" defer></script>
+  <script src="ai-pages.js?v=3" defer></script>
+  <script src="showcase.js?v=19" defer></script>
+  <script src="text-light.js?v=4" defer></script>
+  <script src="cursor.js?v=2" defer></script>
+</body>
+</html>

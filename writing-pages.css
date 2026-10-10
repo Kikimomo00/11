@@ -1,0 +1,19 @@
+.writing-shell{position:fixed;inset:0;z-index:32;background:#000;isolation:isolate;outline:none}
+.writing-stage{position:absolute;inset:0 0 76px;overflow:hidden;background:#000}
+.writing-stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}
+.writing-back{position:absolute;z-index:3;top:29px;left:2.4vw;width:26px;height:26px;display:grid;place-items:center;background:none;border:0;padding:0;color:#999;cursor:pointer}
+.writing-back svg{width:22px;fill:none;stroke:currentColor;stroke-width:1.2}
+.writing-back:hover{color:#eee}.writing-back:focus-visible{outline:1px solid #999;outline-offset:5px}
+.writing-dock{position:absolute;z-index:3;bottom:20px;left:50%;right:auto;top:auto;transform:translateX(-50%);display:flex;flex-direction:row;align-items:center;gap:0;width:max-content;max-width:calc(100% - 30px);padding:4px 7px;border:1px solid #ffffff20;border-radius:28px;background:linear-gradient(150deg,#ffffff0d,#ffffff03),#1119;backdrop-filter:blur(18px);box-shadow:inset 0 1px 0 #ffffff0b}
+.writing-dock a{padding:9px 16px;white-space:nowrap;font-size:10px;letter-spacing:.025em;text-decoration:none;color:#888;transition:color .3s;display:flex;align-items:center;gap:7px}
+.writing-dock a span{font:italic 9px Georgia,serif;color:#666}.writing-dock a[aria-current],.writing-dock a:hover{color:#eee}.writing-dock a:focus-visible{outline:1px solid #888;outline-offset:-2px;border-radius:20px}
+.writing-shell.is-detail .writing-back,.writing-shell.is-detail .writing-dock,.writing-shell.is-modal .writing-back,.writing-shell.is-modal .writing-dock{visibility:hidden;pointer-events:none}
+.writing-shell.is-switching .writing-stage{pointer-events:none}
+.writing-entry-curtain{position:fixed;inset:0;z-index:5;background:#fff;transform-origin:0 0;pointer-events:none;will-change:transform;contain:strict}
+.writing-shell.is-entering{background:transparent}
+.writing-shell.is-entering .writing-stage,.writing-shell.is-entering .writing-back,.writing-shell.is-entering .writing-dock{visibility:hidden}
+body.writing-open>main{opacity:0;pointer-events:none;transform:scale(.985)}
+@media(max-width:600px){.writing-stage{bottom:72px}.writing-back{top:20px;left:3vw}.writing-dock{bottom:16px}.writing-dock a{padding:8px 10px;font-size:9px;gap:5px}}
+@media(prefers-reduced-motion:reduce){.writing-dock a{transition:none}}
+
+.writing-stage{inset:0;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y proximity;scrollbar-width:none;overscroll-behavior:contain}.writing-stage::-webkit-scrollbar{display:none}.writing-flow-page{position:relative;height:100%;scroll-snap-align:start;background:#000}.writing-flow-page iframe{height:calc(100% - 76px)}.writing-shell.is-detail .writing-stage,.writing-shell.is-modal .writing-stage{overflow:hidden}

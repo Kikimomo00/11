@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Narrative Writing · 叙事与内容设计</title>
+<style>
+:root{color-scheme:dark;--black:#080808;--paper:#fff;--ink:#666;--quiet:#999;--line:#ccc}
+*{box-sizing:border-box}body{margin:0;background:var(--black);color:#ccc;font-family:Arial,"Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}::selection{background:#ddd;color:#292929}[hidden]{display:none!important}a{color:inherit;text-decoration:none}button{font:inherit}a:focus-visible,button:focus-visible{outline:1px solid currentColor;outline-offset:7px}
+.exhibition{min-height:100svh;display:flex;align-items:center;padding:90px 0;overflow:hidden}.composition{width:100%;position:relative;display:grid;grid-template-columns:25% minmax(0,1fr);background:var(--paper);color:var(--ink);padding:76px 5.4vw 0;animation:appear .65s ease both}.heading{padding:12px 26px 0 0}.heading::before{content:"";display:block;width:11px;height:11px;background:#aaa;margin-bottom:25px}h1{font:400 clamp(30px,3.1vw,48px)/1.13 Georgia,"Times New Roman",serif;letter-spacing:-.045em;margin:0;color:#555}h1 span{display:block}.heading small{display:block;margin-top:25px;font-size:11px;letter-spacing:.18em;color:#888}.folio{position:relative;min-width:0}.introduction{position:absolute;left:0;right:0;top:-43px;margin:0;font-size:clamp(10px,.85vw,12px);line-height:1.9;letter-spacing:.04em;color:#888;text-wrap:pretty}.paper{position:relative;color:var(--ink)}.works{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(18px,2.5vw,42px)}.work{min-width:0;position:relative;display:flex;flex-direction:column;min-height:265px}.index{font:400 16px/1.5 SimSun,serif;color:#aaa;display:block;margin-bottom:6px}h2{font:400 clamp(20px,1.9vw,29px)/1.5 SimSun,serif;letter-spacing:.025em;margin:0 0 15px -.45em;color:#666;white-space:nowrap;transition:color .3s}.skills{font-size:clamp(10px,.86vw,12px);line-height:2;letter-spacing:.025em;margin:0;color:#888}.skills span{display:block}.drawing{margin-top:auto;padding-top:32px;height:102px;position:relative;display:flex;align-items:center;color:#aaa;transition:color .4s}.drawing svg{width:100%;height:75px;overflow:visible;fill:none;stroke:currentColor;stroke-width:.9;stroke-linecap:round;stroke-linejoin:round}.drawing .trace{stroke:#777;stroke-dasharray:230;stroke-dashoffset:230;transition:stroke-dashoffset 1s cubic-bezier(.22,1,.36,1)}.work:hover h2,.work:focus-within h2{color:#333}.work:hover .trace,.work:focus-within .trace{stroke-dashoffset:0}.baseline{display:none}.folio-footer{position:absolute;left:0;right:0;top:100%;display:flex;justify-content:space-between;padding-top:19px;color:#888;font:italic 10px Georgia,serif;letter-spacing:.13em}.folio-footer span:last-child{font-style:normal;letter-spacing:.24em}
+.reading{height:100svh;display:grid;grid-template-columns:8vw 48vw 1fr;overflow:hidden;position:relative}.return{position:absolute;left:3vw;top:36px;color:#aaa;width:26px;height:26px;display:grid;place-items:center;z-index:2}.return svg{width:22px;fill:none;stroke:currentColor;stroke-width:1.2}.reading-paper{grid-column:2;background:#fff;color:#666;height:100%;padding:clamp(42px,9vh,100px) 12% clamp(35px,7vh,78px);display:flex;flex-direction:column;min-height:0}.reading-topline{display:flex;justify-content:space-between;font:italic 11px Georgia,serif;letter-spacing:.12em;color:#999}.reading-topline span:last-child{font:10px Arial,sans-serif;letter-spacing:.16em}.reading-title{font:400 clamp(30px,3vw,44px)/1.3 SimSun,serif;letter-spacing:.12em;margin:25px 0 30px;color:#555;white-space:normal}.text-window{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:none;outline:none;scroll-behavior:auto}.text-window::-webkit-scrollbar{display:none}.reading-title:focus{outline:none}.text-window:focus-visible{outline:1px solid #ccc;outline-offset:10px}.prose{font:400 clamp(14px,1.17vw,17px)/2.1 "Songti SC",SimSun,serif;letter-spacing:.035em;padding:2px 0 18px;overflow-wrap:anywhere}.prose p{margin:0 0 1.25em}.prose .omission{font:12px/1.9 Arial,sans-serif;color:#999;border-left:1px solid #ddd;padding-left:14px}.reading-foot{padding-top:24px;display:flex;align-items:center;gap:18px;color:#aaa;font:10px Georgia,serif;letter-spacing:.12em}.progress-track{flex:1;height:1px;background:#e5e5e5}.progress-ink{height:1px;background:#888;transform-origin:left;transform:scaleX(0)}.reading-aside{grid-column:3;min-width:0;padding:0 5.5vw 0 6.5vw;display:flex;flex-direction:column;justify-content:center;position:relative}.aside-label{font:10px/1.6 Arial,sans-serif;letter-spacing:.2em;color:#777;margin:0 0 32px}.character{font:400 clamp(25px,2.3vw,36px)/1.4 SimSun,serif;letter-spacing:.13em;color:#ddd;margin:0 0 20px}.approach{font:400 clamp(13px,1.1vw,16px)/1.9 SimSun,serif;letter-spacing:.05em;color:#bbb;margin:0 0 23px;text-wrap:balance}.explanation{font-size:clamp(12px,1vw,14px);line-height:2.25;letter-spacing:.04em;color:#999;margin:0;text-wrap:pretty}.reading-nav{position:absolute;left:6.5vw;right:5.5vw;bottom:7vh;display:flex;justify-content:space-between;gap:16px;border-top:1px solid #292929;padding-top:19px;font-size:11px;color:#999}.reading-nav a{transition:color .2s}.reading-nav a:hover{color:#eee}.reading-paper,.reading-aside{animation:appear .55s cubic-bezier(.2,.8,.2,1) both}.reading-aside{animation-delay:90ms}
+@keyframes appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(min-width:1500px){.composition{padding-top:92px}.work{min-height:305px}}
+@media(max-width:1050px){.composition{grid-template-columns:22% minmax(0,1fr);padding-left:4vw;padding-right:4vw}.works{gap:18px}.heading{padding-right:20px}h1{font-size:29px}.heading small{font-size:10px;letter-spacing:.08em}.introduction{font-size:10px;top:-47px}.skills{font-size:10px}.reading-aside{padding-left:5vw;padding-right:4vw}.reading-nav{left:5vw;right:4vw}.reading-paper{padding-left:10%;padding-right:10%}}
+@media(max-width:760px){.exhibition{padding:60px 0 80px;align-items:flex-start}.composition{grid-template-columns:1fr;padding:35px 7vw 0}.heading{padding:0;display:flex;flex-wrap:wrap;align-items:end;gap:15px 20px}.heading::before{display:none}h1{font-size:34px}h1 span{display:inline}h1 span+span::before{content:' '}.heading small{margin:0 0 5px;font-size:10px}.introduction{position:static;font-size:11px;line-height:2;margin:25px 0 35px;max-width:520px}.works{grid-template-columns:repeat(2,minmax(0,1fr));gap:25px 30px}.work{min-height:205px}.work:last-child{grid-column:1/-1;width:45%}h2{font-size:25px}.skills{font-size:11px}.drawing{height:90px}.drawing svg{height:65px}.reading{height:auto;min-height:100svh;overflow:visible;grid-template-columns:7vw 86vw 7vw}.return{position:fixed;left:1vw;top:22px;width:5vw}.return svg{width:17px}.reading-paper{height:87svh;min-height:480px;padding:35px 10% 28px}.reading-title{margin:22px 0 25px}.prose{font-size:15px}.reading-aside{grid-column:2;padding:45px 7vw 40px}.aside-label{margin-bottom:20px}.character{font-size:28px}.approach{font-size:15px}.explanation{font-size:13px}.reading-nav{position:static;margin-top:40px}.reading-foot{padding-top:18px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* A single paper plane carries the transition between the index and stories. */
+.page-curtain{position:fixed;inset:0;background:#fff;z-index:100;transform-origin:0 0;pointer-events:none;will-change:transform;contain:strict}
+body.is-changing{overflow:hidden}body.is-changing main{pointer-events:none}
+.composition,.reading-paper,.reading-aside{animation:none}
+.reading-label{font:10px/1.8 Arial,"Microsoft YaHei",sans-serif;letter-spacing:.18em;color:#999;margin:30px 0 0}
+.reading-title{margin:12px 0 27px}
+.reading-aside{padding-left:5vw;padding-right:5vw;align-items:center;text-align:center}
+.aside-copy{width:100%;max-width:290px;transform:translateY(-12px)}
+.character{font-size:clamp(22px,1.9vw,29px);margin:0 0 22px;letter-spacing:.16em}
+.approach{font-size:clamp(12px,.95vw,14px);line-height:2;letter-spacing:.06em;margin-bottom:25px}
+.explanation{font-size:clamp(11px,.9vw,13px);line-height:2.35;letter-spacing:.045em}
+.reading-nav{left:6.5vw;right:6.5vw;text-align:left}
+.work h2 a{display:inline-block}
+@supports (background-clip:text){.ink-sweep.is-lit{background-image:radial-gradient(circle 64px at var(--light-x) var(--light-y),var(--light-ink) 0%,var(--light-ink) 12%,var(--base-ink) 100%);background-clip:text;-webkit-background-clip:text;color:transparent!important}}
+@media(max-width:1050px){.reading-aside{padding-left:5vw;padding-right:5vw}.reading-nav{left:5vw;right:5vw}.aside-copy{max-width:260px}}
+@media(max-width:760px){.reading-aside{padding:55px 8vw 40px}.aside-copy{max-width:300px;transform:none}.character{font-size:24px}.explanation{font-size:12px}.reading-label{margin-top:24px}.reading-title{margin-top:10px}.reading-nav{width:100%}}
+</style>
+<script src="../bridge.js" defer></script>
+</head>
+<body>
+<main class="exhibition" aria-label="叙事与内容设计目录">
+  <div class="composition">
+    <header class="heading">
+      <h1><span>Narrative</span><span>Writing</span></h1>
+      <small>叙事与内容设计</small>
+    </header>
+    <section class="folio" aria-label="叙事写作篇目">
+      <p class="introduction">围绕不同人物与关系目标调整叙事方式，在极短篇幅中同时完成人物建立、情绪定调、信息铺设与互动入口设计</p>
+      <div class="paper">
+        <ol class="works">
+          <li class="work" data-work="wen-qichen">
+            <div class="work-copy"><span class="index">壹</span><h2><a href="#read/wen-qichen" aria-label="阅读靠近">【靠近】</a></h2><p class="skills"><span>情绪路径设计</span><span>信息节奏控制</span></p></div>
+            <div class="drawing" aria-hidden="true"><svg viewBox="0 0 150 80"><path d="M9 64C24 61 31 56 37 46L49 31C53 27 58 29 55 33L48 42M38 50L60 37C66 34 69 38 64 41L48 52M48 52L66 46C73 44 75 49 68 51L52 59C44 65 35 67 29 73M140 19C128 23 117 27 111 35L103 44C100 47 94 49 90 47C86 45 89 42 94 41L102 35M112 33L97 23C93 20 89 23 92 26L99 33M127 28C122 35 122 47 114 53L105 61C99 66 92 64 95 60L103 51"/><path class="trace" d="M48 42C63 29 77 49 90 47"/></svg></div>
+          </li>
+          <li class="work" data-work="kazama-saku">
+            <div class="work-copy"><span class="index">贰</span><h2><a href="#read/kazama-saku" aria-label="阅读玩具">【玩具】</a></h2><p class="skills"><span>高概念角色定位</span><span>互动欲望强激发</span></p></div>
+            <div class="drawing" aria-hidden="true"><svg viewBox="0 0 150 80"><path d="M72 36C43 13 24 14 31 31C37 46 63 46 72 36ZM78 37C104 12 126 13 119 31C112 45 91 44 78 37Z"/><path d="M71 32C65 38 70 43 77 41C83 36 79 30 71 32ZM71 42C55 51 52 59 59 73L69 67L73 74C68 60 77 53 78 42M81 42C92 55 108 55 111 69L103 65L101 73C98 60 81 63 76 45M34 24C46 31 55 34 68 36M115 23C103 30 94 34 82 35"/><path class="trace" d="M71 42C55 51 52 59 59 73M81 42C92 55 108 55 111 69"/></svg></div>
+          </li>
+          <li class="work" data-work="zhou-jianshen">
+            <div class="work-copy"><span class="index">叁</span><h2><a href="#read/zhou-jianshen" aria-label="阅读声色">【声色】</a></h2><p class="skills"><span>人物定位</span><span>风格体系建立</span></p></div>
+            <div class="drawing" aria-hidden="true"><svg viewBox="0 0 150 80"><path d="M37 14C36 26 36 41 48 45C60 48 69 38 69 26L68 14ZM38 15C47 18 59 18 67 15M37 29C47 32 59 33 68 29M53 46L52 68M38 72C45 67 59 67 66 72C56 74 47 74 38 72Z"/><path d="M96 69C110 58 92 53 100 43C116 29 90 29 102 14M111 61C118 54 109 46 115 38" opacity=".7"/><path d="M41 21Q44 18 48 21Q45 24 42 23"/><path class="trace" d="M96 69C110 58 92 53 100 43C116 29 90 29 102 14"/></svg></div>
+          </li>
+          <li class="work" data-work="bo-yichen">
+            <div class="work-copy"><span class="index">肆</span><h2><a href="#read/bo-yichen" aria-label="阅读雨幕">【雨幕】</a></h2><p class="skills"><span>宿命感营造</span><span>关系预期建立</span></p></div>
+            <div class="drawing" aria-hidden="true"><svg viewBox="0 0 150 80"><path d="M31 46Q62-8 108 39Q99 35 92 42Q84 37 76 44Q68 38 60 45Q52 40 44 47Q38 42 31 46ZM69 20Q52 26 44 47M69 20Q73 30 76 44M69 20Q88 26 92 42M69 16L69 20M69 43L72 66C73 75 82 74 84 68"/><path d="M19 13L16 22M38 3L35 13M94 5L91 14M124 17L121 26M17 42L14 51M114 55L111 64M40 61L37 70M135 40L132 49" opacity=".6"/><path class="trace" d="M31 46Q62-8 108 39"/></svg></div>
+          </li>
+          <li class="work" data-work="pei-jiaxu">
+            <div class="work-copy"><span class="index">伍</span><h2><a href="#read/pei-jiaxu" aria-label="阅读西湖">【西湖】</a></h2><p class="skills"><span>高密度群像调度</span><span>极端化戏剧冲突</span></p></div>
+            <div class="drawing" aria-hidden="true"><svg viewBox="0 0 150 80"><path d="M22 2Q56 8 79 28M39 6Q41 24 34 42M53 12Q57 28 50 51M65 18Q72 31 67 47M40 16Q31 16 33 25Q39 23 40 16M38 27Q29 28 31 36Q37 35 38 27M55 25Q47 26 49 35Q55 32 55 25M54 38Q46 40 48 48Q53 46 54 38M69 30Q77 28 78 37Q72 37 69 30"/><path d="M15 63Q43 60 64 63M80 57Q103 55 127 58M38 73Q66 69 96 73M102 68Q120 66 139 68" opacity=".7"/><path class="trace" d="M15 63Q43 60 64 63M80 57Q103 55 127 58M38 73Q66 69 96 73"/></svg></div>
+          </li>
+        </ol>
+        <div class="baseline" aria-hidden="true"></div>
+      </div>
+      <div class="folio-footer" aria-hidden="true"><span>01 — 05</span><span>叙事 · 人物 · 关系</span></div>
+    </section>
+  </div>
+</main>
+
+<main class="reading" hidden aria-label="作品阅读页">
+ <a class="return" href="#" aria-label="返回作品目录"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H4m7-7-7 7 7 7"/></svg></a>
+ <section class="reading-paper" aria-labelledby="reading-title">
+  <div class="reading-topline"><span id="work-number"></span><span>NARRATIVE WRITING</span></div>
+  <p class="reading-label">叙事与内容设计</p>
+  <h1 class="reading-title" id="reading-title" tabindex="-1"></h1>
+  <div class="text-window" tabindex="0" role="region" aria-label="作品正文，可上下滚动"><article class="prose"></article></div>
+  <div class="reading-foot"><span id="reader-author"></span><div class="progress-track" aria-hidden="true"><div class="progress-ink"></div></div><span id="reading-progress" aria-label="阅读进度">0%</span></div>
+ </section>
+ <aside class="reading-aside" aria-label="创作说明">
+  <div class="aside-copy"><h2 class="character"></h2><h3 class="approach"></h3><p class="explanation"></p></div>
+  <nav class="reading-nav" aria-label="切换作品"><a id="previous-work"></a><a id="next-work"></a></nav>
+ </aside>
+</main>
+<div class="page-curtain" aria-hidden="true" hidden></div>
+<script type="application/json" id="works-data">[{"id": "wen-qichen", "name": "温其琛", "title": "靠近", "method": "情绪路径设计 · 信息节奏控制", "description": "从日常生活的细微失衡切入，通过物件意象、声音线索与信息延迟建立隐秘关系张力，在角色正式出场前完成婚姻状态、人物关系与情绪悬念的同步铺设。", "paragraphs": ["隔着一扇半掩的磨砂玻璃移门，客厅方向飘来丈夫低缓的尾音。", "“别闹，这周不行，下周一定陪你去。”", "你的手微微一顿。", "那样带着纵容的笑意，是二十年前在旧公寓逼仄的阳台上听过的声音。那时煤气灶上还炖着香气四溢的骨头汤，年轻的丈夫就站在身后，用同样的声调许诺下个周末的去向。", "如今煤气灶换成了嵌进定制岩板的无火电磁炉，抽油烟机运转时安静得听不见一丝杂音。丈夫面对你时，言辞始终挑不出毛病，清晨出门前会体贴地提醒降温，纪念日总有花店准时送来包装素雅的绣球与百合，进退有度，无可挑剔。", "只是那种柔软的语调，不知在什么时候从餐桌旁彻底蒸发了。", "哗啦啦的水流声在这个瞬间显得格外聒噪，你下意识地将水龙头开得更大了一些，试图用这白噪音掩盖外面的声响。", "水底浸着那颗红得过分标致的苹果。", "表面覆着一层薄蜡般的冷光，端正圆润得找不到半点瑕疵，连果蒂都修剪得恰到好处。这是半小时前被拎进玄关的东西。你的女儿脱下外套挂在门厅，身上飘散着最新款香水的甜腻，语气轻快地提起它在东京银座被买下时的原委——“世界第一”，寓意良缘与平顺，单单一枚便抵得上寻常职员数月的开销。那时站在她身侧的年轻人正替她接过手袋，神情挑不出半点差错，目光落在她脸上，恰似一位无可挑剔的未婚夫该有的模样。", "现在的生活其实挺好的吧。", "你在心里对自己说。", "一切都在合情合理的轨道上滑行。", "你有着相敬如宾、温柔体贴的丈夫。你们的女儿聪明、懂事、早熟，甚至很多时候，你反而更像是那个被她照顾着、包容着的孩子。岁月待这具保养得宜的身躯格外宽容，镜子里的脸面光洁匀称，看不出同龄人身上的疲态与风霜。再过半年，女儿就要风风光光地出嫁，嫁给眼前这位家世显赫、挑不出任何瑕疵的年轻人。", "事业、婚姻、家庭、子女。", "每个人落座在客厅柔软的皮质沙发上时，都会用那种混合着艳羡与试探的目光打量这套房子，反复确认这确实是一个毫无破绽的避风港。一切都被安顿在恰当的位置上，没有任何可以抱怨的理由。生活给予的配额丰沛得近乎奢侈，倘若在这样的日子里生出空洞，便无异于不知好歹的贪婪。", "有什么不满足的呢？", "真的，有什么不满足的呢？", "一只手忽然自后方越过右肩，利落地扣上了铜制阀门。", "“咔哒。”", "水声应声截断。", "客厅里那声带着笑意的“乖一点”没有了水流的遮挡，清清楚楚地越过半掩的门缝，直直落在寂静里。", "你的身体猛地一僵，还没来得及回头，一具滚烫宽阔的胸膛就已经毫无缝隙地贴上了你的后背。", "温其琛不知何时站在了你的身后。", "他太高了，一米九的身高像一座倾颓的山，脊背贴着他的胸膛，能感受到那层织物下肌肉的起伏。他衣料上带着初冬的冷冽木香，混杂着年轻躯体蒸腾出的热意，把洗碗槽里淡淡的苹果清甜彻底冲散。", "他没有后撤，反而就势往前倾压了半分，左手依然撑在大理石台沿，将两侧的退路尽数截断。", "湿冷的苹果脱手滚落在水槽底。年轻男人低下头，额前的碎发擦过耳廓，气息沉沉地落在你的颈侧。", "“妈妈，水太凉了，伤手。”"]}, {"id": "kazama-saku", "name": "风间朔", "title": "玩具", "method": "高概念角色定位 · 互动欲望强激发", "description": "通过语言风格、行为细节与情绪基调的强烈反差，在开场的寥寥数段内同时立住人物的危险感、天真感与恶劣底色。用户在极短的篇幅里便能获得清晰而鲜明的人物认知，并产生继续互动的动机。", "paragraphs": ["西园寺家的豪宅此刻宛如一具被掏空的巨大尸骸，查封的人刚贴完封条离开。书房里弥漫着一股陈旧纸张腐烂的霉味，你的父亲瘫坐在地上，还在语无伦次地或咒骂或哀求。", "只有坐在办公桌上的少年是干净的。", "风间朔晃荡着修长的双腿，宽大的白色卫衣袖口吞没了手掌，只露出一点点漂亮的、缺乏血色的指尖。他手里捏着那份足以让西园寺家万劫不复的秘密账本，像是在折纸飞机一样随意地折叠着，用父亲最宝贵的钢笔在纸张上乱涂乱画。", "风间朔嫌弃地皱了皱眉，随手将纸飞机扔向了跪在地上的男人——准确地砸到了你和他共同的“父亲”脸上。", "「うるさいな、お父さん。もう騒ぎ続けるなら、舌も抜いちゃうぞ？」", "「好吵啊，老头子。再叫唤的话，就把你的舌头也拔掉哦？」", "少年用那种轻快地说着，灰色的眼睛里却是一片死寂的冰原。看着那个曾经不可一世的男人吓得噤若寒蝉，他无聊地打了个哈欠。", "真没劲。这就是复仇吗？像捏死一只蚂蚁一样简单，也一样无趣。", "他的视线在狼藉的房间里漫无目的地游移，却在掠过角落时猛然顿住。", "那里站着一个人。", "那是你。", "朔的瞳孔微微放大，眼底那种快要熄灭的兴奋火焰，忽然又像被泼了油一样剧烈燃烧起来。", "啊……对了。", "还有一个玩具没坏呢。", "他轻巧地从椅子上跳下来，踩着满地的文件纸，一步一步走到你面前。甜腻的花果香混合着刺鼻的墨水味瞬间霸道地包裹了你的呼吸空间，将你与这个崩坏的世界隔绝开来。", "〔此处省略涉及少年角色的性化描写。〕", "「あ、そういえば。兄さんの病院代、今月分まだ払ってないよね？」", "「パパがこんな状態じゃ、もう払えないね。……可哀想に。あの高い機械が止まったら、お兄ちゃん死んじゃうのかな？」", "「啊，说起来。哥哥的医药费，这个月的份还没付吧？」", "「爸爸变成这副样子，已经付不起了呢。……真可怜。要是那台昂贵的机器停了，哥哥会死的吧？」", "啪。", "一声轻脆的声响。", "他从口袋里抽出一张黑卡，毫不留情地扇在了你的侧脸上，冰冷的塑料硬角刮过你娇嫩的皮肤，带来一阵刺痛。", "啪、啪。", "又是两下。他像是在教训不听话的宠物，拍打着你的面颊，把你那原本高傲的脸打得微微偏过去，泛起红晕。", "「次は、あなたの番だよ。」", "「『ワン』って鳴いて？？……そうしたら、僕が借金も、お兄ちゃんの命も、全部払ってあげる。」", "「接下来，轮到你了。」", "「汪一声怎么样？……那样的话，我就乖乖帮你把债还了，连同哥哥的命，也都帮你买下来哦。」"]}, {"id": "zhou-jianshen", "name": "周见深", "title": "声色", "method": "人物定位 · 风格体系搭建", "description": "以哲思化的对白、统一的意象系统与克制的语气搭建人物的表达风格，使角色在多轮互动中始终保持高辨识度与人格一致性，把一次性的人物设定经营成可持续的角色 IP。", "paragraphs": ["周见深枕边无人时，睡眠是极浅的。", "夜色还未散尽，一丝清朗便从层层雾霭中迸进，给这满城的钢筋水泥蒙上青灰色的面纱。", "他常在清晨时分想起那个多年前的晚上。", "酒吧里的空气总是沉闷。", "白花香熟透了似的黏在鼻腔，射灯光柱落下来，散成一圈圈浑黄的光晕，照亮一张张年轻而迷醉的脸庞。", "光影流转间，许宸祐那张脸从暗处浮出来，一袭鬓发灿若流金。", "“爱是 Leap of Faith。”", "“如果爱不能让我们从现象界的庸常解放，便不足以称之为爱。”", "周见深没接话，垂着眼拨弄酒杯。", "“闲的。”", "周见深唇角极轻地勾了一下，转瞬即逝。他觉得这群含着金汤匙出生的纨绔子弟实在是太闲了，闲到需要在酒池肉林里找那点形而上的意义。", "许宸祐听了，捂着脸狂笑起来，肩膀耸动。", "“深哥，咱们这群人里，心最闲的难道不是你？”", "他笑够了，理了理自己一头金发，拉起坐在旁边正玩着德州的霍清随。", "“小霍总，嬉游醉眼，莫负青春呐。别看了，再好的颜色到了那边的奈何桥也是灰的。去跳舞啊。”", "两人嘻嘻哈哈混进舞池，沙发区瞬间空了一大块，显出几分冷清来。", "“借个火。”", "周见深对此不置可否，只是微微侧过头，对着旁边那座“冰山”伸出了手。修长的手指在昏暗的灯光下泛着冷玉般的光泽。", "一旁的顾朝夕终于肯从iPad里抬起头来，神情是一贯的冷漠，随手抛过来一枚朗声。", "“少抽点，伤肺。”", "“心都黑了，还在乎肺？”", "周见深轻笑。", "“叮”的一声脆响，幽蓝的火苗猛地蹿起。", "点火，吸入，过肺。", "烟草枯干的魂魄在高温下炸裂，化作辛辣的雾气，顺着喉管一路向下，在他的肺叶里攻城略地，最后又被徐徐吐出。", "在这声色犬马的极乐场，他觉得自己像是个没有重量的幽灵，隔着一层厚厚的雾气，冷眼看着这红尘万丈，众生皆苦。", "烟雾升腾起来，暧昧地缠绵过他的眉眼。", "他隔着那层灰蓝色的雾，看向对岸的方向。", "隔着人海，隔着这俗世三千丈软红尘，你的目光清凌凌地望过来，像一口深井。", "朝北市的天亮了。", "三环外的一件件黑色羽绒服深入城市的腹地时，这里的清晨格外静谧。周见深看着窗外琼屑压绿枝，旧时能困囿人一生的四方庭院，竟在时代更迭后显得天地辽阔起来。", "指尖的香烟燃着一截长长的烟灰，将落未落。", "五光十色的光晕再次浮现在眼前。", "半生风月都在此刻化作了春水香风。夜阑对酒处，依旧梦魂中。", "唇角的笑意似乎深了些许，任凭月光皎洁，几分意味深长。", "烟雾缭绕中，他没有移开目光，对着那个方向，缓缓地吐出一口烟圈。", "他在看你。"]}, {"id": "bo-yichen", "name": "薄亦臣", "title": "雨幕", "method": "宿命感营造 · 关系预期建立", "description": "先以稳定的婚姻秩序与日常细节建立人物现状，再借雨夜、红灯与偶遇逐步推动情绪偏移，通过克制的动作变化而非直接抒情，让用户在关系真正发生前便感知到人生轨迹即将改变，并自然产生继续互动的期待。", "paragraphs": ["江陵市的雨季总带着一股挥之不去的料峭。", "暴雨如注，江陵市的排水系统在猛烈的雨势下显得有些吃力，路面上的积水倒映着五光十色的冷色碎光。", "黑色轿车平稳地行驶在雨幕中，薄亦臣双手虚搭在方向盘上。今天连轴转做了两台搭桥手术，白日里春山暖日的面容在此刻透着一丝尚未完全褪去的疲倦。", "乍暖还寒的时节，戚冷未减腊前时。浅杏色的羊绒衫被他工整地挽到小臂，露出的腕骨随着转动方向盘的动作隐现。", "副驾驶座上，沈晚意伸手将散落的头发别到耳后，一脸歉意地看他，轻柔而甜蜜。", "“今天科室那么忙，我还让你特意绕路来接我……要是太累的话，我自己叫车回去也没关系的。”", "薄亦臣目视前方，视线穿透厚重的雨帘，打着转向灯平稳并线。", "“这种天气很难叫车，” 薄亦臣的语气一如既往地温和，顺手将车内空调调高了两度，“我是你的丈夫。接你是顺路，不用觉得麻烦。”", "既然承诺了婚姻，便应尽到伴侣的义务。", "他如是想。", "孕期的浮肿反倒让她因常年节食而过于消瘦的身躯多了些珠圆玉润的丰腴，沈晚意双手搭在自己隆起的小腹上，不再多言。她深知这个男人的底线与偏好，在他面前，她始终保持着那副不想添麻烦却又迫不得已需要依靠的模样。", "车厢内重新恢复了安静。", "前方十字路口的红灯亮起，倒计时闪烁着刺眼的红光。薄亦臣踩下刹车，车身稳稳停在斑马线前。", "他抬手捏了捏眉心，借着这几十秒的空隙稍作放松。雨势丝毫没有减弱的迹象，大颗的雨滴狠狠砸在车窗玻璃上，迅速碎裂成无数条蜿蜒的水痕。", "车厢内的沉闷让人感到一丝压抑，薄亦臣降下了一点点车窗。微凉的潮湿水汽瞬间顺着缝隙钻了进来，夹杂着泥土与柏油路面的涩味。", "他微微侧过头，目光漫不经心地掠过副驾驶那侧的车窗，看向道路边缘。", "雨水连成一条条密集的线，在夜幕下织出一道巨大的水帘。", "水汽晦冥，狂风肆虐，春雷阗阗。", "迷蒙光影交错之中的街角，一道身影静静地伫立于风雨之中。", "隔着被雨水冲刷得斑驳的车窗，外面的世界像透纳笔下洇湿的水彩。墨色漫漶，万象模糊。", "天地混沌的中心，那道身影的轮廓突兀地撞进了他的视野。", "倒计时只剩三秒。", "薄亦臣搭在方向盘上的手指，微微停顿了一下。"]}, {"id": "pei-jiaxu", "name": "裴嘉许", "title": "西湖", "method": "高密度群像调度 · 极端化戏剧冲突", "description": "在多人场景中同步编排人物关系、背景信息与冲突升级，并以信息差与反转设计用户的入场方式。将复杂的内容结构梳理为清晰的戏剧节奏，使多人关系既清晰可读，又能持续向前推进。", "paragraphs": ["杭州的城市气质很复杂。", "湖滨的镜头昼夜不歇，批量制造出来的面孔隔着屏幕招徕众生。男人盘算女人的口袋，女人估量男人的身家。市列珠玑，豪奢相竞，人们吞噬着闪亮的器物，轮番把饥馑而惘然的年轻灵魂喂养得珠光宝气。", "光影之下，潋滟的水波鉴照过崇祯五年的大雪茫茫，也容纳了无数今人的涕泪。", "裴嘉许多少算个善感的人，西湖也曾饮过他的一滴热泪。他自觉是高楼间漂泊的游魂，在这样充满矛盾的都市中谋生。", "会所坐落在上城区，水晶吊灯在昂贵的石料上泼洒出漫漶的金屑。裴嘉许在更衣室扣好衬衫，镜中的脸一贯缺少血色，眉骨与鼻梁的转折却越发分明。与他打扮相仿的男人倚在储物柜旁，抽出一根烟递到他面前。", "“我mommy今晚又让你叫走了。”男人拿打火机替他点烟，语气里掺着半真半假的埋怨，“我陪了她大半个月，她看见你从门口经过，抬手就让我走。你这张脸，真够断人财路的。”", "裴嘉许礼节性地接过，将烟含在唇间，却始终没有过肺。", "“她是和你闹脾气呢。”", "男人瞥着他，鼻间溢出一点讥诮。自命清高的人他见得多了，没见过哪个有好结果的。这么想着，目光也变得黏腻起来，从裴嘉许的肩背一路丈量到腰际，“你这样的，在H市算稀缺货。”", "裴嘉许把那支烟按灭，烟身只短了一截，留下一圈烧焦的皱纸。不愉快的对话，他只想快点结束。", "男人却没有就此收声，低音道。", "“你之前和那位京少的事，圈里人都听说过。闹成那样还能回来上班，也算有本事。”", "他说完便往外走，经过裴嘉许身侧时，手指在那截窄腰上勾了一下，意味深长。", "裴嘉许立刻锁着眉侧身避开，把衬衫抚平。这类冒犯在此处并不稀奇，愤怒若不能折现，便只会被人当作另一种供人观赏的奇景。", "走廊尽头的门已经打开。领班站在那里，朝他招了招手。", "今晚的客人临时换了包厢。裴嘉许进门时，房间里挤满推杯换盏的人影，他下意识地逐一掠过去。这是表演课上留下的习惯，总忍不住从一张脸推测一段故事。混杂的人声搅成一片，惹得太阳穴微微发胀，他闭了闭眼，把目光放远，随后认清那张久违的脸。", "陆劭来兴致缺缺，身边的人倒是花团锦簇，男男女女围坐在一起，纵情于声色之间。他套着件黑色皮衣，宽阔的肩线撑出凌厉的骨架，张扬肆意，眉宇间依旧是那副养尊处优的俊朗模样。", "“哟，这不是那谁…？”", "一位年轻男人开了口，陆劭来顿时抬起眼，看清来人后，冷然一嗤。", "“就他了。”", "四周的谈笑短暂收束，众人看了看裴嘉许，又看向陆劭来，一副讳莫如深的模样。", "门从身后阖上，流转的紫色灯影恰在此刻覆上裴嘉许的脸，将他原本苍凉如雪的皮肤染出几分近乎妖异的诡艳。眉骨以下沉入昏暗，鼻梁与唇峰却被紫光逐寸描明，那张素日冷净的面孔于是沾了夜色深处的靡丽，连睫毛投下的影子也浓得发苦。", "裴嘉许的视线越过人群，落在陆劭来脸上。", "“陆先生。”", "陆劭来盯着他看了片刻，唇边忽然落下一声低笑，眼前这场重逢终于有了合他心意的安排。", "上帝真是个好编剧啊。陆劭来理应是畅快的，此刻的他也的确这么想。他敲了敲桌沿，示意裴嘉许过来。", "“站那么远做什么？”陆劭来抬了抬下颌，“怕我吃了你？”", "旁边有人识趣地挪开位置，沙发中央空出一席。裴嘉许没有过去，只将两手垂在身侧，口吻平直。", "“领班说有人点我。既然是你，酒要怎么开，照会所的规定来。”", "“规定？”陆劭来目光停在他熨帖的衬衫领口，“你当年扇我耳光的时候，遵守的是哪门子规定。”", "这一句落下，席间的人便各自收敛了声气。有人低头拨弄手机，有人端杯饮酒，却没有谁真正将注意力移开。", "裴嘉许的脸仍旧苍白。", "“如果你是来讨那一巴掌，我还给你。”", "“好。” 陆劭来望着那张无甚表情的脸，旧日积压的愤怒终于找到了裂隙，将他的眉目浸得愈加冷峻。他长舒一口气，端起桌上那杯未动的酒，“那就还。”", "酒液骤然泼出去。", "白色衣襟随即失去原有的纯粹，鲜红的酒液并不比血靡艳，灯下的污痕逐渐扩散，边缘蜿蜒，红如海底蠕动的珊瑚。", "“便宜你了。”", "一杯酒怎么够！", "他想叫经理进来，想让所有人看着裴嘉许从这里滚出去，想让这张脸在众人面前失去体面。甚至可以砸了这里，断了裴嘉许的所有生路。", "可酒杯空了，那些足以毁掉裴嘉许的命令仍堵在舌根，一句也没有出口。", "他盯着白衣上不断扩大的红痕，五指越收越紧，硌得掌心发疼。", "———费尽心思把人逼到这里，临到最后，竟还要替对方掂量一杯酒究竟会不会太烈？", "真他爸的难堪。", "裴嘉许面无表情地站在原处，沉默横亘在二人之间，将所有未尽的话语悬停在空中。", "“你在这里端什么架子？”他盯着裴嘉许，“陪谁不是陪，轮到我就不肯了？”", "“陆先生要是没有别的吩咐，我去换件衣服。”", "裴嘉许看着他，脸上仍是一副毫无波澜的模样。", "陆劭来最恨的模样。", "“我认识你的时候，你就这样。”他长舒口气，敛了敛过于外溢的情绪，给自己重新斟了半杯，“清高得不合时宜，吃了亏也不肯作声。可惜人总有软处，也总有人治得住你。”", "包厢里忽然响起手机铃声，那是裴嘉许为你设置的专属铃声。他低头，脸色顷刻变了。", "上班期间，他从不携带私人手机，会所的规矩也不允许。那部手机分明被锁在更衣室的柜中，柜门合拢之前，他还确认过一遍。如今它正被陆劭来握在手中，将这一晚所有不合情理之处一并揭开：临时更换的包厢，查无登记的门牌，迟迟没有露面的客人，还有方才同事过于匆促的背影。", "裴嘉许猛然抬头。陆劭来端着酒杯立在几步之外，脸上终于有了确凿的笑意。他拊起掌，笑得疏朗清越，满室灯火也压不住那份恣意。", "十分钟前，一个陌生女人拦住了你。", "她声称手机没电，又找不到来接自己的朋友，想借你的手机打电话问路。她手忙脚乱地接过手机，告诉你错拨通了你的通讯录。", "手机划开，听筒处传来你的声音。"]}]</script>
+<script>
+const works = JSON.parse(document.getElementById('works-data').textContent);
+const directory = document.querySelector('.exhibition');
+const reading = document.querySelector('.reading');
+const textWindow = document.querySelector('.text-window');
+const positions = new Map();
+let active = null;
+function progress(){
+ const max = textWindow.scrollHeight-textWindow.clientHeight;
+ const value = max > 0 ? Math.min(100,Math.round(textWindow.scrollTop/max*100)) : 100;
+ document.getElementById('reading-progress').textContent = value+'%';
+ document.querySelector('.progress-ink').style.transform = `scaleX(${value/100})`;
+}
+function renderRoute(hash = location.hash){
+ const previous = active;
+ if(active) positions.set(active,textWindow.scrollTop);
+ const work = works.find(item => hash === '#read/'+item.id);
+ active = work?.id ?? null;
+ directory.hidden = !!work; reading.hidden = !work;
+ if(!work){
+  document.title='Narrative Writing · 叙事与内容设计';
+  if(previous) directory.querySelector(`[href="#read/${previous}"]`).focus({preventScroll:true});
+  prepareInk();
+  return;
+ }
+ const i = works.indexOf(work);
+ document.title=work.title+' · '+work.name+' | Narrative Writing';
+ document.getElementById('work-number').textContent = String(i+1).padStart(2,'0')+' / 05';
+ document.getElementById('reading-title').textContent = work.title;
+ document.getElementById('reader-author').textContent = work.name;
+ document.querySelector('.character').textContent = work.name;
+ document.querySelector('.approach').textContent = work.method;
+ document.querySelector('.explanation').textContent = work.description;
+ const paragraphs=work.paragraphs.map(text=>{const p=document.createElement('p');p.textContent=text;if(text.startsWith('〔此处省略'))p.className='omission';return p;});
+ document.querySelector('.prose').replaceChildren(...paragraphs);
+ const prev=document.getElementById('previous-work'),next=document.getElementById('next-work');
+ prev.href=i ? '#read/'+works[i-1].id : '#';
+ prev.textContent=i ? '← '+works[i-1].title : '← 作品目录';
+ next.href=i<works.length-1 ? '#read/'+works[i+1].id : '#';
+ next.textContent=i<works.length-1 ? works[i+1].title+' →' : '作品目录 →';
+ textWindow.scrollTop=positions.get(work.id)||0;
+ document.getElementById('reading-title').focus({preventScroll:true});
+ progress();
+ prepareInk();
+}
+
+const curtain = document.querySelector('.page-curtain');
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+let changing = false;
+let pendingHash = location.hash;
+let renderedHash = location.hash;
+function paperRect(){return (active ? document.querySelector('.reading-paper') : document.querySelector('.composition')).getBoundingClientRect();}
+function paperTransform(rect){return `translate3d(${rect.left}px,${rect.top}px,0) scale(${rect.width/innerWidth},${rect.height/innerHeight})`;}
+async function play(element,frames,options){
+ const animation=element.animate(frames,{fill:'both',...options});
+ try{await animation.finished;}catch{}finally{animation.cancel();}
+}
+function reveal(direction){
+ if(reducedMotion.matches)return;
+ const elements=active ? [document.querySelector('.reading-topline'),document.querySelector('.reading-label'),document.querySelector('.reading-title'),textWindow,document.querySelector('.reading-foot'),document.querySelector('.aside-copy'),document.querySelector('.reading-nav')] : [document.querySelector('.heading'),document.querySelector('.introduction'),...document.querySelectorAll('.work')];
+ elements.forEach((element,i)=>{const base=getComputedStyle(element).transform;const rest=base==='none'?'':base;play(element,[{opacity:0,transform:`${rest} translate3d(${direction*14}px,16px,0)`},{opacity:1,transform:`${rest} translate3d(0,0,0)`}],{duration:720,delay:120+i*35,easing:'cubic-bezier(.16,1,.3,1)'});});
+}
+async function changePage(){
+ pendingHash=location.hash;
+ if(changing)return;
+ changing=true;
+ clearInk();
+ document.body.classList.add('is-changing');
+ try{
+  while(renderedHash!==pendingHash){
+   const from=works.findIndex(item=>item.id===active);
+   const to=works.findIndex(item=>pendingHash==='#read/'+item.id);
+   const direction=to>=from?1:-1;
+   if(reducedMotion.matches){renderRoute(pendingHash);renderedHash=pendingHash;continue;}
+   const origin=paperTransform(paperRect());
+   curtain.hidden=false;
+   curtain.style.transform=origin;
+   await play(curtain,[{transform:origin,opacity:0,offset:0},{transform:origin,opacity:1,offset:.16},{transform:'translate3d(0,0,0) scale(1,1)',opacity:1,offset:1}],{duration:460,easing:'cubic-bezier(.65,0,.25,1)'});
+   curtain.style.transform='translate3d(0,0,0) scale(1,1)';
+   // Commit the newest destination only after the white plane fully covers the page.
+   const destination=pendingHash;
+   renderRoute(destination);
+   renderedHash=destination;
+   const target=paperTransform(paperRect());
+   reveal(direction);
+   await play(curtain,[{transform:'translate3d(0,0,0) scale(1,1)'},{transform:target}],{duration:520,easing:'cubic-bezier(.76,0,.24,1)'});
+   curtain.hidden=true;
+  }
+ }finally{
+  curtain.hidden=true;
+  changing=false;
+  document.body.classList.remove('is-changing');
+ }
+}
+// The gradient clips to glyphs, leaving the page surface untouched.
+let inkNodes=[];
+let litNodes=new Set();
+let pointer=null;
+let inkFrame=0;
+function prepareInk(){
+ clearInk();
+ const surface=active ? reading : directory;
+ inkNodes=[...surface.querySelectorAll('.heading h1 span,.heading small,.introduction,.index,.work h2 a,.skills span,.reading-label,.reading-title,.prose p,.character,.approach,.explanation')];
+ inkNodes.forEach(element=>{
+  element.classList.add('ink-sweep');
+  element.style.setProperty('--base-ink',getComputedStyle(element).color);
+  element.style.setProperty('--light-ink',element.closest('.reading-aside')?'#ffffff':'#222222');
+ });
+}
+function clearInk(){litNodes.forEach(element=>element.classList.remove('is-lit'));litNodes.clear();}
+function updateInk(){
+ inkFrame=0;
+ if(!pointer || changing){clearInk();return;}
+ const updates=[];
+ for(const element of inkNodes){
+  const rect=element.getBoundingClientRect();
+  const inScroller=element.closest('.text-window');
+  if(inScroller){const clip=inScroller.getBoundingClientRect();if(pointer.y<clip.top || pointer.y>clip.bottom)continue;}
+  if(rect.bottom<0 || rect.top>innerHeight || pointer.x<rect.left-48 || pointer.x>rect.right+48 || pointer.y<rect.top-48 || pointer.y>rect.bottom+48)continue;
+  updates.push({element,x:pointer.x-rect.left,y:pointer.y-rect.top});
+ }
+ const next=new Set(updates.map(item=>item.element));
+ for(const element of litNodes)if(!next.has(element))element.classList.remove('is-lit');
+ updates.forEach(({element,x,y})=>{element.style.setProperty('--light-x',x+'px');element.style.setProperty('--light-y',y+'px');element.classList.add('is-lit');});
+ litNodes=next;
+}
+function scheduleInk(){if(!inkFrame)inkFrame=requestAnimationFrame(updateInk);}
+document.addEventListener('pointermove',event=>{if(event.pointerType==='touch')return;pointer={x:event.clientX,y:event.clientY};scheduleInk();},{passive:true});
+document.documentElement.addEventListener('pointerleave',()=>{pointer=null;clearInk();});
+window.addEventListener('blur',()=>{pointer=null;clearInk();});
+document.addEventListener('scroll',scheduleInk,{capture:true,passive:true});
+textWindow.addEventListener('scroll',progress,{passive:true});
+window.addEventListener('resize',()=>{progress();scheduleInk();});
+window.addEventListener('hashchange',changePage);
+window.addEventListener('keydown',event=>{
+ if(event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.target.closest('input,textarea,select,[contenteditable="true"]'))return;
+ if(event.key==='Escape' && active){event.preventDefault();location.hash='';return;}
+ if(!['ArrowLeft','ArrowRight'].includes(event.key))return;
+ if(window.getSelection()?.toString())return;
+ event.preventDefault();
+ if(event.repeat)return;
+ const current=works.findIndex(item=>location.hash==='#read/'+item.id);
+ const next=current<0 ? (event.key==='ArrowRight'?0:works.length-1) : current+(event.key==='ArrowRight'?1:-1);
+ location.hash=next<0 || next>=works.length ? '' : 'read/'+works[next].id;
+});
+renderRoute();
+</script>
+<script src="../../scroll-bridge.js"></script></body>
+</html>

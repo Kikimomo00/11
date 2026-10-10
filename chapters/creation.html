@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>角色创作 · 作品与案例</title>
+  
+  
+  
+  
+
+  <style>
+    :root {
+      --bg-black: #030305;
+      --silver-bright: #edeef2;
+      --silver-mid: #9ea2ac;
+      --silver-edge: rgba(240, 245, 255, 0.95);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-black);
+      color: #eaecef;
+      font-family: 'Noto Serif SC', 'Cinzel', serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      user-select: none;
+      position: relative;
+    }
+
+    .font-cinzel { font-family: 'Cinzel', serif; }
+    .font-mono-tag { font-family: 'Space Grotesk', monospace; }
+
+    #stardust-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .stage-floor-reflection {
+      position: fixed;
+      bottom: -18vh;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90vw;
+      max-width: 1400px;
+      height: 38vh;
+      background: radial-gradient(
+        ellipse at center,
+        rgba(220, 230, 245, 0.035) 0%,
+        rgba(150, 160, 180, 0.01) 50%,
+        transparent 75%
+      );
+      pointer-events: none;
+      z-index: 2;
+      filter: blur(36px);
+    }
+
+    /* Staggered float animations */
+    .stagger-1 { transform: translateY(-22px) rotate(-2deg); }
+    .stagger-2 { transform: translateY(28px) rotate(1.8deg); }
+    .stagger-3 { transform: translateY(-26px) rotate(-1.5deg); }
+    .stagger-4 { transform: translateY(20px) rotate(2.2deg); }
+
+    @keyframes float-a {
+      0%, 100% { transform: translateY(-22px) rotate(-2deg); }
+      50% { transform: translateY(-36px) rotate(-1deg); }
+    }
+    @keyframes float-b {
+      0%, 100% { transform: translateY(28px) rotate(1.8deg); }
+      50% { transform: translateY(12px) rotate(2.5deg); }
+    }
+    @keyframes float-c {
+      0%, 100% { transform: translateY(-26px) rotate(-1.5deg); }
+      50% { transform: translateY(-40px) rotate(-2.3deg); }
+    }
+    @keyframes float-d {
+      0%, 100% { transform: translateY(20px) rotate(2.2deg); }
+      50% { transform: translateY(5px) rotate(1.2deg); }
+    }
+
+    .card-anim-1 { animation: float-a 9.6s ease-in-out infinite; }
+    .card-anim-2 { animation: float-b 11.2s ease-in-out infinite 0.8s; }
+    .card-anim-3 { animation: float-c 9.2s ease-in-out infinite 1.4s; }
+    .card-anim-4 { animation: float-d 10.4s ease-in-out infinite 0.4s; }
+
+    .card-unit {
+      aspect-ratio: 9 / 16;
+      width: 100%;
+      max-width: 255px;
+      border-radius: 0px;
+      position: relative;
+      overflow: hidden;
+      background: #060608;
+      cursor: pointer;
+      pointer-events: auto;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.75);
+      transition: 
+        transform 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform, opacity, box-shadow;
+      z-index: 5;
+    }
+
+    /* Desktop 1.5px / Mobile 1.0px dynamic reactive edge border */
+    .card-unit::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 0px;
+      pointer-events: none;
+      border: 1.5px solid var(--silver-edge);
+      -webkit-mask-image: radial-gradient(
+        120px circle at var(--mouse-px, -999px) var(--mouse-py, -999px),
+        black 0%,
+        rgba(0, 0, 0, 0.5) 55%,
+        transparent 80%
+      );
+      mask-image: radial-gradient(
+        120px circle at var(--mouse-px, -999px) var(--mouse-py, -999px),
+        black 0%,
+        rgba(0, 0, 0, 0.5) 55%,
+        transparent 80%
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 25;
+    }
+
+    @media (max-width: 768px) {
+      .card-unit::after {
+        border-width: 1.0px;
+      }
+    }
+
+    .card-unit.is-chosen::after {
+      opacity: 1;
+    }
+
+    .card-unit .art-layer {
+      opacity: 1;
+      filter: none;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      pointer-events: none;
+    }
+
+    .card-unit img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .card-light-cone {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      background: radial-gradient(
+        circle 220px at var(--light-x, 50%) var(--light-y, 50%),
+        rgba(255, 255, 255, 0.22) 0%,
+        rgba(215, 225, 240, 0.08) 50%,
+        transparent 80%
+      );
+      mix-blend-mode: screen;
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 10;
+    }
+
+    .card-unit.is-chosen .card-light-cone {
+      opacity: 1;
+    }
+
+    .cards-arena.is-focusing .card-unit:not(.is-chosen) {
+      opacity: 0.36;
+      transform: scale(0.96) translateY(10px) !important;
+    }
+
+    .card-unit.is-chosen {
+      opacity: 1 !important;
+      transform: scale(1.06) translateY(-14px) !important;
+      box-shadow: 0 30px 65px rgba(0, 0, 0, 0.95), 0 0 45px rgba(220, 230, 255, 0.12);
+      z-index: 30;
+    }
+
+    /* Modal styling */
+    .editorial-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(2, 2, 4, 0.94);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      perspective: 2000px;
+    }
+
+    .editorial-overlay.is-active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .editorial-frame {
+      width: 100%;
+      max-width: 980px;
+      max-height: 92vh;
+      background-color: #060608;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 2.75rem 3.25rem;
+      position: relative;
+      overflow-y: auto;
+      transform: rotateY(-30deg) rotateX(15deg) scale(0.85);
+      opacity: 0;
+      transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.65s ease;
+      will-change: transform, opacity;
+      transform-style: preserve-3d;
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.98), 0 0 50px rgba(255, 255, 255, 0.04);
+    }
+
+    .editorial-overlay.is-active .editorial-frame {
+      transform: rotateY(0deg) rotateX(0deg) scale(1);
+      opacity: 1;
+    }
+
+    /* Staggered text reveal */
+    .editorial-content-chunk {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .editorial-overlay.is-active .editorial-content-chunk.delay-1 {
+      opacity: 1; transform: translateY(0); transition-delay: 0.15s;
+    }
+    .editorial-overlay.is-active .editorial-content-chunk.delay-2 {
+      opacity: 1; transform: translateY(0); transition-delay: 0.28s;
+    }
+    .editorial-overlay.is-active .editorial-content-chunk.delay-3 {
+      opacity: 1; transform: translateY(0); transition-delay: 0.4s;
+    }
+
+    /* Tapered hairline divider */
+    .tapered-divider {
+      height: 1px;
+      width: 100%;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(235, 240, 255, 0.85) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      border: none;
+    }
+
+    /* Borderless refined close cross button (28px) */
+    .luxury-close-btn {
+      position: relative;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 0;
+      transition: filter 0.3s ease;
+    }
+    .luxury-close-btn::before,
+    .luxury-close-btn::after {
+      content: '';
+      position: absolute;
+      width: 15px;
+      height: 1px;
+      background-color: #cbd0dc;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .luxury-close-btn::before {
+      transform: rotate(45deg);
+    }
+    .luxury-close-btn::after {
+      transform: rotate(-45deg);
+    }
+    .luxury-close-btn:hover::before {
+      transform: rotate(225deg);
+      background-color: #ffffff;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    }
+    .luxury-close-btn:hover::after {
+      transform: rotate(135deg);
+      background-color: #ffffff;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    }
+
+    /* Right artwork wrapper */
+    .clean-image-wrapper {
+      position: relative;
+      transform-style: preserve-3d;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.95);
+    }
+
+    .clean-image-wrapper .card-frame-inner {
+      transform: rotateY(-36deg) rotateX(12deg) scale(0.85) translateZ(-60px);
+      opacity: 0;
+      filter: blur(8px) brightness(1.25);
+      transition: 
+        transform 1.05s cubic-bezier(0.16, 1, 0.25, 1) 0.18s,
+        opacity 0.85s cubic-bezier(0.16, 1, 0.25, 1) 0.18s,
+        filter 0.95s cubic-bezier(0.16, 1, 0.25, 1) 0.18s;
+      will-change: transform, opacity, filter;
+    }
+
+    .editorial-overlay.is-active .clean-image-wrapper .card-frame-inner {
+      transform: rotateY(0deg) rotateX(0deg) scale(1) translateZ(0);
+      opacity: 1;
+      filter: blur(0px) brightness(1);
+    }
+
+    /* Diagonal silver light sweep entrance */
+    .clean-image-wrapper .silver-veil {
+      position: absolute;
+      top: -60%;
+      left: -60%;
+      width: 220%;
+      height: 220%;
+      background: linear-gradient(
+        135deg,
+        transparent 35%,
+        rgba(255, 255, 255, 0.6) 48%,
+        rgba(230, 240, 255, 0.85) 50%,
+        rgba(255, 255, 255, 0.6) 52%,
+        transparent 65%
+      );
+      mix-blend-mode: screen;
+      pointer-events: none;
+      transform: translate3d(-60%, -60%, 0) rotate(25deg);
+      opacity: 0;
+      transition: transform 1.25s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, opacity 0.8s ease 0.2s;
+      z-index: 10;
+    }
+
+    .editorial-overlay.is-active .clean-image-wrapper .silver-veil {
+      transform: translate3d(60%, 60%, 0) rotate(25deg);
+      opacity: 1;
+    }
+
+    .editorial-frame::-webkit-scrollbar {
+      width: 2px;
+    }
+    .editorial-frame::-webkit-scrollbar-track {
+      background: #020204;
+    }
+    .editorial-frame::-webkit-scrollbar-thumb {
+      background: rgba(220, 230, 245, 0.2);
+    }
+
+    @media (max-width: 768px) {
+      .editorial-frame {
+        padding: 2rem 1.5rem;
+      }
+    }
+  </style>
+<link rel="stylesheet" href="creation.css?v=4">
+</head>
+
+<body class="relative min-h-screen px-4 md:px-8 py-8 flex flex-col justify-between items-center">
+
+  
+  <div class="stage-floor-reflection"></div>
+
+  <header class="w-full h-4 relative z-10"></header>
+
+  <main class="w-full max-w-7xl mx-auto flex items-center justify-center my-auto relative z-10">
+    <!-- 【卡面角色归属与顺序备注 - 严禁删除此行注释】：第1张：周见深 | 第2张：宗湛 | 第3张：薄亦臣 | 第4张：尹洵仁 -->
+    <div id="cards-arena" class="cards-arena grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 lg:gap-12 xl:gap-14 w-full max-w-6xl justify-items-center items-center py-12 md:py-16">
+
+      <!-- 【卡面角色：周见深 - 严禁删除此行注释】 -->
+      <div 
+        class="card-unit card-anim-1 stagger-1" 
+        data-anim="card-anim-1" 
+        data-stagger="stagger-1"
+        data-role-index="0"
+        role="button"
+        tabindex="0"
+        aria-label="周见深 角色画作详情"
+      >
+        <div class="card-light-cone"></div>
+        <div class="art-layer bg-[#0a0a0c]">
+          <img 
+            src="../assets/characters/zhou.jpg" 
+            alt="周见深" 
+            loading="eager"
+            onerror="this.onerror=null; this.src='../assets/characters/zhou.jpg';"
+          />
+        </div>
+      </div>
+
+      <!-- 【卡面角色：宗湛 - 严禁删除此行注释】 -->
+      <div 
+        class="card-unit card-anim-2 stagger-2" 
+        data-anim="card-anim-2" 
+        data-stagger="stagger-2"
+        data-role-index="1"
+        role="button"
+        tabindex="0"
+        aria-label="宗湛 角色画作详情"
+      >
+        <div class="card-light-cone"></div>
+        <div class="art-layer bg-[#0a0a0c]">
+          <img 
+            src="../assets/characters/zong.jpg" 
+            alt="宗湛" 
+            loading="eager"
+            onerror="this.onerror=null; this.src='../assets/characters/zong.jpg';"
+          />
+        </div>
+      </div>
+
+      <!-- 【卡面角色：薄亦臣 - 严禁删除此行注释】 -->
+      <div 
+        class="card-unit card-anim-3 stagger-3" 
+        data-anim="card-anim-3" 
+        data-stagger="stagger-3"
+        data-role-index="2"
+        role="button"
+        tabindex="0"
+        aria-label="薄亦臣 角色画作详情"
+      >
+        <div class="card-light-cone"></div>
+        <div class="art-layer bg-[#0a0a0c]">
+          <img 
+            src="../assets/characters/bo.jpg" 
+            alt="薄亦臣" 
+            loading="eager"
+            onerror="this.onerror=null; this.src='../assets/characters/bo.jpg';"
+          />
+        </div>
+      </div>
+
+      <!-- 【卡面角色：尹洵仁 - 严禁删除此行注释】 -->
+      <div 
+        class="card-unit card-anim-4 stagger-4" 
+        data-anim="card-anim-4" 
+        data-stagger="stagger-4"
+        data-role-index="3"
+        role="button"
+        tabindex="0"
+        aria-label="尹洵仁 角色画作详情"
+      >
+        <div class="card-light-cone"></div>
+        <div class="art-layer bg-[#0a0a0c]">
+          <img 
+            src="../assets/characters/yin.jpg" 
+            alt="尹洵仁" 
+            loading="eager"
+            onerror="this.onerror=null; this.src='../assets/characters/yin.jpg';"
+          />
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="w-full py-5 text-center relative z-20">
+    <p class="text-[12px] md:text-[13px] tracking-[0.16em] md:tracking-[0.22em] font-light text-neutral-400 hover:text-neutral-200 transition-colors duration-500 max-w-3xl mx-auto px-4 leading-relaxed">
+      本页面展示的所有画作，均由本人使用人工智能图像工具 Midjourney 独立创作生成
+    </p>
+  </footer>
+
+  <div id="editorial-modal" class="editorial-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true" inert>
+    <div class="editorial-frame" id="modal-frame">
+
+      <!-- Header with Roman numeral tag and luxury borderless cross close button -->
+      <div class="flex items-center justify-between pb-6 mb-8 border-b border-white/[0.08] relative z-10">
+        <div class="flex items-center space-x-3 text-[10px] md:text-[11px] font-mono-tag tracking-[0.3em] text-neutral-400">
+          <span id="modal-roman" class="text-white font-medium">I</span>
+          <span class="text-neutral-600">/</span>
+          <span class="text-neutral-400">PROFILE</span>
+        </div>
+
+        <button 
+          id="modal-close-btn" 
+          class="luxury-close-btn"
+          aria-label="关闭画卷"
+          title="关闭 [ESC]"
+        ></button>
+      </div>
+
+      <!-- Architectural Grid: Left Text, Right 9:16 Artwork -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-14 items-center relative z-10">
+        
+        <!-- Left Text Module: Focused Typography & Roomy Layout -->
+        <div class="md:col-span-7 flex flex-col justify-center order-2 md:order-1 pr-0 md:pr-4">
+          
+          <div class="editorial-content-chunk delay-1 mb-4">
+            <h2 id="modal-title" class="text-4xl sm:text-5xl lg:text-6xl font-normal tracking-[0.15em] text-white font-cinzel leading-none">
+              周见深
+            </h2>
+          </div>
+
+          <div class="editorial-content-chunk delay-2 mb-6">
+            <p id="modal-tagline" class="text-sm sm:text-base tracking-[0.18em] text-[#d6d9e0] font-normal mb-3 inline-block">
+              逆向需求洞察 · 交互阻力设计
+            </p>
+            <!-- Tapered Divider Line (1px Center, Fading at Both Ends) -->
+            <div class="tapered-divider"></div>
+          </div>
+
+          <div class="editorial-content-chunk delay-3">
+            <p id="modal-body" class="text-sm sm:text-[15px] leading-[2.2] text-neutral-300 font-light tracking-wide text-justify">
+              针对同类题材同质化、AI 角色过度迎合而削弱关系探索空间的问题，反向切入「烂人真心 × 难攻略」细分方向。通过好感度阈值、阶段性反馈与系统提示词约束角色行为，并以文学化叙事增强人物复杂性。作品未经主动推广，累计互动超百万轮，并持续引发社区讨论。
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Right Visual Module: Pristine 9:16 Vertical Card with 3D Entrance -->
+        <div class="md:col-span-5 flex justify-center items-center order-1 md:order-2">
+          <div class="clean-image-wrapper w-full max-w-[280px] sm:max-w-[320px] md:max-w-full">
+            <div class="silver-veil"></div>
+            <div class="card-frame-inner aspect-[9/16] w-full bg-[#050507] border border-white/20 overflow-hidden">
+              <img 
+                id="modal-image" 
+                src="" 
+                alt="" 
+                class="w-full h-full object-cover block select-none"
+              />
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script src="character-data.js"></script>
+<script src="creation.js?v=5"></script>
+<script src="scroll-bridge.js"></script></body>
+</html>
