@@ -47,5 +47,5 @@
   if(data?.type==='writing-child-route'&&index===0){const m=/^#read\/([a-z-]+)$/.exec(data.hash);if(location.hash.startsWith('#writing/narrative')){history.replaceState(null,'','#writing/narrative'+(m?'/'+m[1]:''));chrome(0,m?data.hash:'');}}
  });
  addEventListener('keydown',e=>{if(shell.hidden||modal||detail||e.ctrlKey||e.metaKey||e.altKey||e.target.closest('input,textarea,[contenteditable="true"]'))return;if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();e.stopImmediatePropagation();if(!e.repeat)step(e.key==='ArrowRight'?1:-1);}if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();location.hash='#writing';}},true);
- window.WritingPages={sync,close(){++sequence;cancel();playbackReady=false;cancelAnimationFrame(scrollFrame);scrollFrame=0;stage.replaceChildren();frames=[];sections=[];loads=[];current=0;modal=detail=false;shell.hidden=true;shell.classList.remove('is-detail','is-modal');},get active(){return !shell.hidden;}};
+ window.WritingPages={sync,close(){++sequence;cancel();playbackReady=false;cancelAnimationFrame(scrollFrame);scrollFrame=0;stage.replaceChildren();frames=[];sections=[];loads=[];current=0;modal=detail=false;shell.hidden=true;shell.classList.remove('is-detail','is-modal');},get active(){return !shell.hidden;},get current(){return pages[current][0];}};
 })();

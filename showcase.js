@@ -126,10 +126,16 @@
   async function returnToDirectory(){
     returning=true;document.body.classList.add('section-returning');wake();
     const layers=[...document.querySelectorAll('#characters-intro,.chapter-pagination,.writing-shell,.ai-shell,.evidence-page')].filter(el=>!el.hidden);
-    const motions=reduced.matches?[]:layers.map(el=>el.animate(el.matches('.chapter-pagination')?[{opacity:1},{opacity:0}]:[{clipPath:'inset(0% 0 0 0)',transform:'translateY(0)'},{clipPath:'inset(0% 0 100% 0)',transform:'translateY(-28px)'}],{duration:760,easing:'cubic-bezier(.76,0,.24,1)',fill:'forwards'}));
-    await Promise.all(motions.map(a=>a.finished.catch(()=>{})));
+    const preserveNarrative=writingActive&&window.WritingPages.current==='narrative';
+    let cleanup=()=>{};const motions=[];
+    if(!preserveNarrative&&window.SectionExits){
+      cleanup=await window.SectionExits.play({kind:writingActive?'writing':aiActive?'ai':'characters',home:cardAt(Math.round(position))});
+    }else{
+      if(!reduced.matches)layers.forEach(el=>motions.push(el.animate(el.matches('.chapter-pagination')?[{opacity:1},{opacity:0}]:[{clipPath:'inset(0% 0 0 0)',transform:'translateY(0)'},{clipPath:'inset(0% 0 100% 0)',transform:'translateY(-28px)'}],{duration:760,easing:'cubic-bezier(.76,0,.24,1)',fill:'forwards'})));
+      await Promise.all(motions.map(a=>a.finished.catch(()=>{})));
+    }
     if(writingActive)setWriting(false);if(aiActive)setAI(false);if(chapterActive)await setChapter(false,true);
-    window.EvidenceGallery?.close(true);window.ChapterPages.sync(null);motions.forEach(a=>a.cancel());document.body.classList.remove('section-returning');returning=false;$('main').inert=false;wake();
+    window.EvidenceGallery?.close(true);window.ChapterPages.sync(null);motions.forEach(a=>a.cancel());cleanup();document.body.classList.remove('section-returning');returning=false;$('main').inert=false;wake();
   }
   function openAI(){if(aiActive)return;history.pushState(null,'','#ai/intro');setAI(true);window.AIPages.sync(location.hash);}
   function setAI(open){
